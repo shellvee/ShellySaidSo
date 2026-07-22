@@ -6,632 +6,165 @@
 <title>GODZILLA CHORE TRACKER</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
-
   :root {
-    --green: #39ff14;
-    --green-dim: #1a7a00;
-    --green-dark: #0d3d00;
-    --orange: #ff6b00;
-    --orange-dim: #7a3300;
-    --red: #ff2244;
-    --bg: #050a05;
-    --bg2: #0a140a;
-    --bg3: #0f1f0f;
-    --card: #0d1a0d;
-    --border: #1a3d1a;
-    --text: #c8f0c8;
-    --text-dim: #6a8f6a;
-    --gold: #ffd700;
-    --blue: #00cfff;
+    --green:#39ff14;--green-dim:#1a7a00;--green-dark:#0d3d00;
+    --orange:#ff6b00;--orange-dim:#7a3300;--red:#ff2244;
+    --bg:#050a05;--bg2:#0a140a;--bg3:#0f1f0f;--card:#0d1a0d;
+    --border:#1a3d1a;--text:#c8f0c8;--text-dim:#6a8f6a;
+    --gold:#ffd700;--blue:#00cfff;
   }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* HEADER */
+  header{background:linear-gradient(180deg,#000 0%,var(--bg2) 100%);border-bottom:2px solid var(--green-dim);padding:14px 16px 10px;text-align:center;position:relative;}
+  header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(57,255,20,.08) 0%,transparent 70%);pointer-events:none;}
+  .header-title{font-family:'Bangers',cursive;font-size:clamp(1.8rem,7vw,3.5rem);letter-spacing:6px;color:var(--green);text-shadow:0 0 20px var(--green),0 0 40px var(--green-dim),2px 2px 0 #000;line-height:1.05;}
+  .header-sub{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:4px;color:var(--text-dim);margin-top:2px;}
+  .sync-pill{display:inline-flex;align-items:center;gap:5px;font-family:'Orbitron',monospace;font-size:.5rem;letter-spacing:2px;padding:3px 8px;border-radius:20px;margin-top:6px;border:1px solid var(--border);color:var(--text-dim);}
+  .sync-pill.ok{border-color:var(--green-dim);color:var(--green);}
+  .sync-pill.err{border-color:var(--red);color:var(--red);}
+  .sync-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  /* BALANCE */
+  .balance-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .balance-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;position:relative;overflow:hidden;}
+  .balance-card.time-card{border-color:var(--blue);}
+  .balance-card.money-card{border-color:var(--gold);}
+  .balance-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .time-card::before{background:var(--blue);box-shadow:0 0 8px var(--blue);}
+  .money-card::before{background:var(--gold);box-shadow:0 0 8px var(--gold);}
+  .balance-label{font-family:'Orbitron',monospace;font-size:.5rem;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px;}
+  .balance-value{font-family:'Bangers',cursive;font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:2px;line-height:1;}
+  .time-card .balance-value{color:var(--blue);text-shadow:0 0 12px var(--blue);}
+  .money-card .balance-value{color:var(--gold);text-shadow:0 0 12px var(--gold);}
+  .balance-unit{font-size:.6rem;color:var(--text-dim);margin-top:2px;}
 
-  /* === HEADER === */
-  header {
-    background: linear-gradient(180deg, #000 0%, var(--bg2) 100%);
-    border-bottom: 2px solid var(--green-dim);
-    padding: 16px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
+  /* WEEK BAR */
+  .week-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;}
+  .week-label{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:2px;color:var(--text-dim);}
+  .week-earned{font-family:'Bangers',cursive;font-size:.95rem;color:var(--green);letter-spacing:1px;}
 
-  header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 50% 0%, rgba(57,255,20,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
+  /* TABS */
+  .tabs{display:flex;background:var(--bg2);border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{flex:1;min-width:70px;padding:11px 6px;border:none;background:transparent;color:var(--text-dim);font-family:'Orbitron',monospace;font-size:.5rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+  .tab-btn:hover{color:var(--text);background:var(--bg3);}
+  .tab-btn.active{color:var(--green);border-bottom-color:var(--green);background:var(--bg3);}
 
-  .header-title {
-    font-family: 'Bangers', cursive;
-    font-size: clamp(2rem, 8vw, 4rem);
-    letter-spacing: 6px;
-    color: var(--green);
-    text-shadow: 0 0 20px var(--green), 0 0 40px var(--green-dim), 2px 2px 0 #000;
-    line-height: 1;
-  }
+  /* SECTIONS */
+  .section{display:none;padding:14px;}
+  .section.active{display:block;}
+  .section-title{font-family:'Bangers',cursive;font-size:1.5rem;letter-spacing:3px;color:var(--green);margin-bottom:3px;text-shadow:0 0 10px var(--green-dim);}
+  .section-desc{font-size:.68rem;color:var(--text-dim);margin-bottom:14px;}
 
-  .header-sub {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 4px;
-    color: var(--text-dim);
-    margin-top: 4px;
-    text-transform: uppercase;
-  }
+  /* CHORE CARDS */
+  .chore-group{margin-bottom:18px;}
+  .chore-group-title{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;padding:5px 0;border-bottom:1px solid var(--border);margin-bottom:8px;}
+  .chore-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 10px 10px 14px;margin-bottom:7px;display:flex;align-items:center;gap:8px;transition:all .2s;position:relative;overflow:hidden;}
+  .chore-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+  .chore-card.type-time::before{background:var(--blue);}
+  .chore-card.type-money::before{background:var(--gold);}
+  .chore-card:hover{border-color:var(--green-dim);background:var(--bg3);}
+  .chore-card.maxed{opacity:.45;}
+  .chore-card.maxed .chore-name{text-decoration:line-through;}
+  .chore-info{flex:1;min-width:0;}
+  .chore-name{font-size:.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .chore-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center;}
+  .badge{font-size:.55rem;padding:2px 5px;border-radius:3px;letter-spacing:1px;text-transform:uppercase;}
+  .badge-time{background:rgba(0,207,255,.12);color:var(--blue);border:1px solid rgba(0,207,255,.25);}
+  .badge-money{background:rgba(255,215,0,.12);color:var(--gold);border:1px solid rgba(255,215,0,.25);}
+  .badge-freq{background:rgba(57,255,20,.06);color:var(--text-dim);border:1px solid var(--border);}
+  .badge-count{background:rgba(57,255,20,.15);color:var(--green);border:1px solid var(--green-dark);}
+  .chore-value{font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:1px;text-align:right;min-width:46px;}
+  .type-time .chore-value{color:var(--blue);}
+  .type-money .chore-value{color:var(--gold);}
+  .done-btn{background:var(--green-dark);border:1px solid var(--green-dim);color:var(--green);font-family:'Orbitron',monospace;font-size:.5rem;letter-spacing:1px;padding:7px 9px;border-radius:4px;cursor:pointer;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+  .done-btn:hover{background:var(--green-dim);color:#000;}
+  .done-btn:active{transform:scale(.95);}
+  .done-btn.maxed-btn{background:transparent;border-color:var(--border);color:var(--text-dim);cursor:default;}
+  .count-group{display:flex;align-items:center;gap:4px;}
+  .count-display{font-family:'Orbitron',monospace;font-size:.68rem;color:var(--green);min-width:26px;text-align:center;}
+  .mini-btn{background:var(--green-dark);border:1px solid var(--green-dim);color:var(--green);font-size:.95rem;width:26px;height:26px;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .mini-btn:hover{background:var(--green-dim);color:#000;}
+  .mini-btn.minus{color:var(--red);border-color:var(--red);background:rgba(255,34,68,.08);}
+  .mini-btn.minus:hover{background:rgba(255,34,68,.25);}
 
-  /* === BALANCE BAR === */
-  .balance-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 16px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-  }
+  /* SPEND */
+  .spend-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;}
+  .spend-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;}
+  .spend-card:hover{border-color:var(--orange-dim);background:var(--bg3);}
+  .spend-card:active{transform:scale(.97);}
+  .spend-card-icon{font-size:1.8rem;margin-bottom:6px;}
+  .spend-card-label{font-family:'Orbitron',monospace;font-size:.52rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px;}
+  .spend-card-value{font-family:'Bangers',cursive;font-size:1.3rem;letter-spacing:1px;color:var(--orange);}
+  .custom-spend{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;}
+  .custom-spend-title{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:11px;}
+  .input-row{display:flex;gap:8px;align-items:center;margin-bottom:9px;}
+  .input-row label{font-size:.68rem;color:var(--text-dim);min-width:88px;}
+  .input-row input,.input-row textarea{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.82rem;padding:7px;}
+  .input-row input:focus,.input-row textarea:focus{outline:none;border-color:var(--orange-dim);}
+  .action-btn{width:100%;padding:11px;border:none;border-radius:6px;font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:7px;}
+  .btn-time{background:rgba(0,207,255,.12);border:1px solid var(--blue);color:var(--blue);}
+  .btn-time:hover{background:rgba(0,207,255,.25);}
+  .btn-money{background:rgba(255,215,0,.12);border:1px solid var(--gold);color:var(--gold);}
+  .btn-money:hover{background:rgba(255,215,0,.25);}
+  .btn-danger{background:rgba(255,34,68,.1);border:1px solid var(--red);color:var(--red);}
+  .btn-danger:hover{background:rgba(255,34,68,.25);}
+  .btn-orange{background:rgba(255,107,0,.15);border:1px solid var(--orange);color:var(--orange);}
+  .btn-orange:hover{background:rgba(255,107,0,.3);}
+  .btn-green{background:var(--green-dark);border:1px solid var(--green-dim);color:var(--green);}
+  .btn-green:hover{background:var(--green-dim);color:#000;}
 
-  .balance-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
+  /* HISTORY */
+  .history-controls{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .filter-btn{background:var(--card);border:1px solid var(--border);color:var(--text-dim);font-family:'Orbitron',monospace;font-size:.5rem;letter-spacing:1px;padding:6px 10px;border-radius:4px;cursor:pointer;text-transform:uppercase;transition:all .15s;}
+  .filter-btn.active{border-color:var(--green-dim);color:var(--green);background:var(--green-dark);}
+  .log-entry{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:9px;}
+  .log-entry.earn-time{border-left:3px solid var(--blue);}
+  .log-entry.earn-money{border-left:3px solid var(--gold);}
+  .log-entry.spend{border-left:3px solid var(--orange);}
+  .log-icon{font-size:1.1rem;}
+  .log-info{flex:1;min-width:0;}
+  .log-chore{font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .log-date{font-size:.6rem;color:var(--text-dim);margin-top:2px;}
+  .log-value{font-family:'Bangers',cursive;font-size:1.05rem;white-space:nowrap;}
+  .log-entry.earn-time .log-value{color:var(--blue);}
+  .log-entry.earn-money .log-value{color:var(--gold);}
+  .log-entry.spend .log-value{color:var(--orange);}
+  .empty-state{text-align:center;padding:36px 20px;color:var(--text-dim);font-size:.78rem;}
+  .empty-state .big{font-size:2.5rem;margin-bottom:8px;}
 
-  .balance-card.time-card { border-color: var(--blue); }
-  .balance-card.money-card { border-color: var(--gold); }
+  /* PARENT */
+  .pin-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px;}
+  .pin-title{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px;}
+  .pin-input{display:flex;gap:8px;margin-bottom:8px;}
+  .pin-input input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:1.1rem;padding:9px;letter-spacing:8px;text-align:center;}
+  .pin-input input:focus{outline:none;border-color:var(--orange-dim);}
+  .daily-list-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.78rem;}
+  .daily-list-item:last-child{border-bottom:none;}
+  .daily-item-name{flex:1;}
+  .daily-item-earned{font-family:'Bangers',cursive;font-size:.95rem;color:var(--green);}
 
-  .balance-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-  }
-  .time-card::before { background: var(--blue); box-shadow: 0 0 8px var(--blue); }
-  .money-card::before { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+  /* SYNC SETUP */
+  .sync-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;}
+  .sync-section-title{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px;}
+  .sync-steps{font-size:.7rem;color:var(--text-dim);line-height:1.7;margin-bottom:10px;}
+  .sync-steps b{color:var(--text);}
+  .code-box{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px;margin-bottom:8px;position:relative;}
+  .code-box textarea{width:100%;background:transparent;border:none;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:.58rem;resize:none;height:90px;outline:none;line-height:1.4;}
+  .copy-btn{position:absolute;top:5px;right:5px;background:var(--green-dark);border:1px solid var(--green-dim);color:var(--green);font-family:'Orbitron',monospace;font-size:.45rem;letter-spacing:1px;padding:4px 7px;border-radius:3px;cursor:pointer;text-transform:uppercase;}
+  .copy-btn:hover{background:var(--green-dim);color:#000;}
+  .url-status{font-size:.62rem;margin-top:5px;padding:5px 8px;border-radius:4px;}
+  .url-status.ok{background:rgba(57,255,20,.08);color:var(--green);border:1px solid var(--green-dark);}
+  .url-status.err{background:rgba(255,34,68,.08);color:var(--red);border:1px solid rgba(255,34,68,.2);}
 
-  .balance-label {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 3px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .balance-value {
-    font-family: 'Bangers', cursive;
-    font-size: clamp(1.8rem, 6vw, 3rem);
-    letter-spacing: 2px;
-    line-height: 1;
-  }
-  .time-card .balance-value { color: var(--blue); text-shadow: 0 0 12px var(--blue); }
-  .money-card .balance-value { color: var(--gold); text-shadow: 0 0 12px var(--gold); }
-
-  .balance-unit {
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  /* === TABS === */
-  .tabs {
-    display: flex;
-    background: var(--bg2);
-    border-bottom: 2px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-
-  .tab-btn {
-    flex: 1;
-    min-width: 80px;
-    padding: 12px 8px;
-    border: none;
-    background: transparent;
-    color: var(--text-dim);
-    font-family: 'Orbitron', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .tab-btn:hover { color: var(--text); background: var(--bg3); }
-  .tab-btn.active {
-    color: var(--green);
-    border-bottom-color: var(--green);
-    background: var(--bg3);
-  }
-
-  /* === SECTIONS === */
-  .section { display: none; padding: 16px; }
-  .section.active { display: block; }
-
-  /* === SECTION HEADER === */
-  .section-title {
-    font-family: 'Bangers', cursive;
-    font-size: 1.6rem;
-    letter-spacing: 3px;
-    color: var(--green);
-    margin-bottom: 4px;
-    text-shadow: 0 0 10px var(--green-dim);
-  }
-  .section-desc {
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    margin-bottom: 16px;
-  }
-
-  /* === CHORE CARDS === */
-  .chore-group { margin-bottom: 20px; }
-
-  .chore-group-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 3px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 10px;
-  }
-
-  .chore-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .chore-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-  }
-  .chore-card.type-time::before { background: var(--blue); }
-  .chore-card.type-money::before { background: var(--gold); }
-
-  .chore-card:hover { border-color: var(--green-dim); background: var(--bg3); }
-  .chore-card.done-today {
-    opacity: 0.5;
-    border-color: var(--green-dark);
-  }
-  .chore-card.done-today .chore-name { text-decoration: line-through; }
-
-  .chore-info { flex: 1; min-width: 0; }
-
-  .chore-name {
-    font-size: 0.85rem;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .chore-meta {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-    flex-wrap: wrap;
-  }
-
-  .badge {
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 3px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .badge-time { background: rgba(0,207,255,0.15); color: var(--blue); border: 1px solid rgba(0,207,255,0.3); }
-  .badge-money { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
-  .badge-freq { background: rgba(57,255,20,0.08); color: var(--text-dim); border: 1px solid var(--border); }
-
-  .chore-value {
-    font-family: 'Bangers', cursive;
-    font-size: 1.2rem;
-    letter-spacing: 1px;
-    text-align: right;
-    min-width: 52px;
-  }
-  .type-time .chore-value { color: var(--blue); }
-  .type-money .chore-value { color: var(--gold); }
-
-  .done-btn {
-    background: var(--green-dark);
-    border: 1px solid var(--green-dim);
-    color: var(--green);
-    font-family: 'Orbitron', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 1px;
-    padding: 8px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .done-btn:hover { background: var(--green-dim); color: #000; }
-  .done-btn:active { transform: scale(0.95); }
-  .done-btn.already-done {
-    background: transparent;
-    border-color: var(--border);
-    color: var(--text-dim);
-    cursor: default;
-  }
-
-  /* multi-completion counter */
-  .count-btn-group {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .count-display {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.7rem;
-    color: var(--green);
-    min-width: 24px;
-    text-align: center;
-  }
-  .mini-btn {
-    background: var(--green-dark);
-    border: 1px solid var(--green-dim);
-    color: var(--green);
-    font-size: 1rem;
-    width: 28px;
-    height: 28px;
-    border-radius: 3px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-  }
-  .mini-btn:hover { background: var(--green-dim); color: #000; }
-
-  /* === SPEND SECTION === */
-  .spend-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .spend-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .spend-card:hover { border-color: var(--orange-dim); background: var(--bg3); }
-  .spend-card:active { transform: scale(0.97); }
-
-  .spend-card-icon { font-size: 2rem; margin-bottom: 8px; }
-  .spend-card-label {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .spend-card-value {
-    font-family: 'Bangers', cursive;
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-    color: var(--orange);
-  }
-
-  .custom-spend {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 12px;
-  }
-  .custom-spend-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .input-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .input-row label {
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    min-width: 90px;
-  }
-  .input-row input {
-    flex: 1;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.85rem;
-    padding: 8px;
-  }
-  .input-row input:focus {
-    outline: none;
-    border-color: var(--orange-dim);
-  }
-
-  .action-btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Orbitron', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 8px;
-  }
-  .btn-spend-time {
-    background: rgba(0,207,255,0.15);
-    border: 1px solid var(--blue);
-    color: var(--blue);
-  }
-  .btn-spend-time:hover { background: rgba(0,207,255,0.3); }
-  .btn-spend-money {
-    background: rgba(255,215,0,0.15);
-    border: 1px solid var(--gold);
-    color: var(--gold);
-  }
-  .btn-spend-money:hover { background: rgba(255,215,0,0.3); }
-
-  /* === HISTORY === */
-  .history-controls {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .filter-btn {
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    font-family: 'Orbitron', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 1px;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.15s;
-  }
-  .filter-btn.active { border-color: var(--green-dim); color: var(--green); background: var(--green-dark); }
-
-  .log-entry {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .log-entry.earn-time { border-left: 3px solid var(--blue); }
-  .log-entry.earn-money { border-left: 3px solid var(--gold); }
-  .log-entry.spend { border-left: 3px solid var(--orange); }
-
-  .log-icon { font-size: 1.2rem; }
-  .log-info { flex: 1; min-width: 0; }
-  .log-chore { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .log-date { font-size: 0.65rem; color: var(--text-dim); margin-top: 2px; }
-  .log-value {
-    font-family: 'Bangers', cursive;
-    font-size: 1.1rem;
-    white-space: nowrap;
-  }
-  .log-entry.earn-time .log-value { color: var(--blue); }
-  .log-entry.earn-money .log-value { color: var(--gold); }
-  .log-entry.spend .log-value { color: var(--orange); }
-
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-dim);
-    font-size: 0.8rem;
-  }
-  .empty-state .big { font-size: 3rem; margin-bottom: 8px; }
-
-  /* === PARENT CHECK === */
-  .daily-check-card {
-    background: var(--card);
-    border: 1px solid var(--orange-dim);
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-  .daily-check-title {
-    font-family: 'Bangers', cursive;
-    font-size: 1.3rem;
-    letter-spacing: 2px;
-    color: var(--orange);
-    margin-bottom: 8px;
-  }
-  .daily-check-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 16px; }
-
-  .check-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .check-item:last-child { border-bottom: none; }
-  .check-checkbox {
-    width: 20px; height: 20px;
-    border: 2px solid var(--border);
-    border-radius: 3px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.15s;
-    background: var(--bg2);
-  }
-  .check-checkbox.checked { border-color: var(--green); background: var(--green-dark); }
-  .check-checkbox.checked::after { content: '✓'; color: var(--green); font-size: 0.8rem; }
-  .check-label { flex: 1; font-size: 0.8rem; }
-  .check-earned {
-    font-family: 'Bangers', cursive;
-    font-size: 1rem;
-    color: var(--green);
-  }
-
-  .pin-section {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-  .pin-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .pin-input {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  .pin-input input {
-    flex: 1;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.2rem;
-    padding: 10px;
-    letter-spacing: 8px;
-    text-align: center;
-  }
-  .pin-input input:focus { outline: none; border-color: var(--orange-dim); }
-  .pin-submit {
-    background: rgba(255,107,0,0.2);
-    border: 1px solid var(--orange);
-    color: var(--orange);
-    font-family: 'Orbitron', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    padding: 10px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-transform: uppercase;
-  }
-  .pin-submit:hover { background: rgba(255,107,0,0.4); }
-
-  .parent-unlocked { display: none; }
-  .parent-unlocked.visible { display: block; }
-  .parent-locked.hidden { display: none; }
-
-  .btn-approve-all {
-    width: 100%;
-    padding: 14px;
-    background: var(--green-dark);
-    border: 1px solid var(--green-dim);
-    color: var(--green);
-    font-family: 'Bangers', cursive;
-    font-size: 1.1rem;
-    letter-spacing: 3px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 12px;
-  }
-  .btn-approve-all:hover { background: var(--green-dim); color: #000; }
-
-  /* === TOAST === */
-  #toast {
-    position: fixed;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--card);
-    border: 1px solid var(--green-dim);
-    color: var(--green);
-    font-family: 'Orbitron', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    padding: 12px 24px;
-    border-radius: 6px;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-    text-align: center;
-    max-width: 90vw;
-    z-index: 1000;
-    box-shadow: 0 0 20px rgba(57,255,20,0.3);
-  }
-  #toast.visible {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  #toast.error { border-color: var(--red); color: var(--red); box-shadow: 0 0 20px rgba(255,34,68,0.3); }
-  #toast.spend { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 20px rgba(255,107,0,0.3); }
-
-  /* === MONSTER DECO === */
-  .monster-bar {
-    font-size: 1.4rem;
-    text-align: center;
-    padding: 4px;
-    letter-spacing: 4px;
-    opacity: 0.4;
-    user-select: none;
-  }
-
-  /* === MOBILE NAV === */
-  @media (max-width: 480px) {
-    .balance-bar { padding: 10px; gap: 8px; }
-    .balance-card { padding: 10px; }
-    .section { padding: 12px; }
-    .spend-grid { grid-template-columns: 1fr; }
-  }
+  /* TOAST */
+  #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--green-dim);color:var(--green);font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:2px;padding:11px 22px;border-radius:6px;opacity:0;transition:all .3s;pointer-events:none;text-align:center;max-width:90vw;z-index:1000;box-shadow:0 0 20px rgba(57,255,20,.25);}
+  #toast.visible{opacity:1;transform:translateX(-50%) translateY(0);}
+  #toast.error{border-color:var(--red);color:var(--red);box-shadow:0 0 20px rgba(255,34,68,.25);}
+  #toast.spend{border-color:var(--orange);color:var(--orange);box-shadow:0 0 20px rgba(255,107,0,.25);}
+  @media(max-width:420px){.balance-bar{padding:8px;gap:7px;}.spend-grid{grid-template-columns:1fr;}.section{padding:10px;}}
 </style>
 </head>
 <body>
@@ -639,9 +172,12 @@
 <header>
   <div class="header-title">☢ GODZILLA ☢<br>CHORE TRACKER</div>
   <div class="header-sub">LEVEL UP — EARN — DOMINATE</div>
+  <div id="sync-pill" class="sync-pill">
+    <span class="sync-dot"></span>
+    <span id="sync-text">Local only</span>
+  </div>
 </header>
 
-<!-- BALANCE -->
 <div class="balance-bar">
   <div class="balance-card time-card">
     <div class="balance-label">🎮 Screen Time</div>
@@ -655,124 +191,128 @@
   </div>
 </div>
 
-<!-- TABS -->
+<div class="week-bar">
+  <div class="week-label" id="week-label">WEEK OF —</div>
+  <div class="week-earned" id="week-earned">+0m &nbsp; +$0.00 this week</div>
+</div>
+
 <div class="tabs">
   <button class="tab-btn active" data-tab="today">Today</button>
-  <button class="tab-btn" data-tab="all">All Chores</button>
+  <button class="tab-btn" data-tab="all">All</button>
   <button class="tab-btn" data-tab="spend">Spend</button>
-  <button class="tab-btn" data-tab="history">History</button>
+  <button class="tab-btn" data-tab="history">Log</button>
   <button class="tab-btn" data-tab="parent">Parent</button>
 </div>
 
-<!-- TODAY -->
 <div id="tab-today" class="section active">
   <div class="section-title">TODAY'S MISSIONS</div>
-  <div class="section-desc" id="today-date-label">Loading...</div>
+  <div class="section-desc" id="today-date-label"></div>
   <div id="today-chores-list"></div>
 </div>
 
-<!-- ALL CHORES -->
 <div id="tab-all" class="section">
   <div class="section-title">ALL CHORES</div>
-  <div class="section-desc">Complete any chore to earn rewards</div>
+  <div class="section-desc">Tap Done to earn. Weekly chores reset every Monday.</div>
   <div id="all-chores-list"></div>
 </div>
 
-<!-- SPEND -->
 <div id="tab-spend" class="section">
   <div class="section-title">SPEND REWARDS</div>
   <div class="section-desc">Redeem your hard-earned time &amp; cash</div>
-
   <div class="chore-group-title">⚡ Quick Screen Time</div>
   <div class="spend-grid" id="quick-time-grid"></div>
-
   <div class="chore-group-title">💰 Cash Out</div>
   <div class="spend-grid" id="quick-money-grid"></div>
-
   <div class="custom-spend">
     <div class="custom-spend-title">Custom Amount</div>
-    <div class="input-row">
-      <label>Minutes:</label>
-      <input type="number" id="spend-time-input" min="5" step="5" placeholder="e.g. 30">
-    </div>
-    <button class="action-btn btn-spend-time" onclick="spendCustomTime()">Use Screen Time</button>
-    <div class="input-row">
-      <label>Dollars:</label>
-      <input type="number" id="spend-money-input" min="0.25" step="0.25" placeholder="e.g. 2.00">
-    </div>
-    <button class="action-btn btn-spend-money" onclick="spendCustomMoney()">Cash Out</button>
+    <div class="input-row"><label>Minutes:</label><input type="number" id="spend-time-input" min="5" step="5" placeholder="e.g. 45"></div>
+    <button class="action-btn btn-time" onclick="spendTime(parseInt(document.getElementById('spend-time-input').value)||0)">Use Screen Time</button>
+    <div class="input-row"><label>Dollars:</label><input type="number" id="spend-money-input" min=".25" step=".25" placeholder="e.g. 2.00"></div>
+    <button class="action-btn btn-money" onclick="spendMoney(Math.round((parseFloat(document.getElementById('spend-money-input').value)||0)*100))">Cash Out</button>
   </div>
 </div>
 
-<!-- HISTORY -->
 <div id="tab-history" class="section">
   <div class="section-title">MISSION LOG</div>
   <div class="history-controls">
-    <button class="filter-btn active" data-filter="all" onclick="filterHistory('all', this)">All</button>
-    <button class="filter-btn" data-filter="earn" onclick="filterHistory('earn', this)">Earned</button>
-    <button class="filter-btn" data-filter="spend" onclick="filterHistory('spend', this)">Spent</button>
+    <button class="filter-btn active" onclick="filterHistory('all',this)">All</button>
+    <button class="filter-btn" onclick="filterHistory('earn',this)">Earned</button>
+    <button class="filter-btn" onclick="filterHistory('spend',this)">Spent</button>
   </div>
   <div id="history-list"></div>
 </div>
 
-<!-- PARENT -->
 <div id="tab-parent" class="section">
   <div class="section-title">PARENT PANEL</div>
-  <div class="section-desc">Daily check-in &amp; balance management</div>
 
-  <div class="pin-section parent-locked" id="pin-section">
+  <!-- PIN gate -->
+  <div class="pin-section" id="pin-section">
     <div class="pin-title">Enter Parent PIN</div>
     <div class="pin-input">
       <input type="password" id="pin-input" maxlength="4" placeholder="••••" oninput="checkPin()">
-      <button class="pin-submit" onclick="checkPin()">Enter</button>
+      <button class="action-btn btn-orange" style="margin:0;width:auto;padding:9px 14px" onclick="checkPin()">Go</button>
     </div>
-    <div style="font-size:0.65rem; color:var(--text-dim)">Default PIN: 1234 — change in Settings below</div>
+    <div style="font-size:.62rem;color:var(--text-dim)">Default PIN: 1234</div>
   </div>
 
-  <div class="parent-unlocked" id="parent-content">
-    <div class="daily-check-card">
-      <div class="daily-check-title">☢ DAILY CHECK-IN</div>
-      <div class="daily-check-desc">Review today's completed chores, then approve to lock them in.</div>
+  <!-- Unlocked content -->
+  <div id="parent-content" style="display:none">
+
+    <!-- Daily check -->
+    <div class="custom-spend" style="border-color:var(--orange-dim)">
+      <div class="custom-spend-title" style="color:var(--orange)">☢ Today's Completions</div>
       <div id="daily-check-list"></div>
-      <button class="btn-approve-all" onclick="approveDaily()">✓ APPROVE &amp; LOCK DAY</button>
     </div>
 
+    <!-- Google Sheets sync -->
+    <div class="sync-section">
+      <div class="sync-section-title">📊 Google Sheets Sync</div>
+      <div class="sync-steps">
+        Connect a Google Sheet so all devices share the same data in real-time.<br><br>
+        <b>1.</b> Go to <b>sheets.google.com</b> and create a new blank spreadsheet.<br>
+        <b>2.</b> Click <b>Extensions → Apps Script</b>.<br>
+        <b>3.</b> Delete everything there, paste the code below, click <b>Save</b>.<br>
+        <b>4.</b> Click <b>Deploy → New deployment → Web app</b>.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Execute as: <b>Me</b> &nbsp;|&nbsp; Who has access: <b>Anyone</b><br>
+        <b>5.</b> Copy the Web App URL and paste it below.
+      </div>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyScript()">Copy</button>
+        <textarea id="script-code" readonly></textarea>
+      </div>
+      <div class="input-row">
+        <label>Web App URL:</label>
+        <input type="url" id="sync-url-input" placeholder="https://script.google.com/macros/s/...">
+      </div>
+      <button class="action-btn btn-green" onclick="saveSyncUrl()">Connect &amp; Sync</button>
+      <button class="action-btn btn-danger" onclick="disconnectSync()">Disconnect</button>
+      <div id="url-status" class="url-status" style="display:none"></div>
+    </div>
+
+    <!-- Admin adjustments -->
     <div class="custom-spend">
       <div class="custom-spend-title">⚙ Adjust Balances</div>
-      <div class="input-row">
-        <label>Add minutes:</label>
-        <input type="number" id="admin-add-time" min="0" step="5" placeholder="0">
-      </div>
-      <button class="action-btn btn-spend-time" onclick="adminAdjust('time','add')">+ Add Time</button>
-      <div class="input-row">
-        <label>Remove minutes:</label>
-        <input type="number" id="admin-remove-time" min="0" step="5" placeholder="0">
-      </div>
-      <button class="action-btn btn-spend-time" style="color:var(--red);border-color:var(--red);background:rgba(255,34,68,0.1)" onclick="adminAdjust('time','remove')">− Remove Time</button>
-      <div class="input-row" style="margin-top:12px">
-        <label>Add dollars:</label>
-        <input type="number" id="admin-add-money" min="0" step="0.25" placeholder="0.00">
-      </div>
-      <button class="action-btn btn-spend-money" onclick="adminAdjust('money','add')">+ Add Cash</button>
-      <div class="input-row">
-        <label>Remove dollars:</label>
-        <input type="number" id="admin-remove-money" min="0" step="0.25" placeholder="0.00">
-      </div>
-      <button class="action-btn btn-spend-money" style="color:var(--red);border-color:var(--red);background:rgba(255,34,68,0.1)" onclick="adminAdjust('money','remove')">− Remove Cash</button>
+      <div class="input-row"><label>Add minutes:</label><input type="number" id="admin-add-time" min="0" step="5" placeholder="0"></div>
+      <button class="action-btn btn-time" onclick="adminAdjust('time',1)">+ Add Screen Time</button>
+      <div class="input-row"><label>Remove min:</label><input type="number" id="admin-rm-time" min="0" step="5" placeholder="0"></div>
+      <button class="action-btn btn-danger" onclick="adminAdjust('time',-1)">− Remove Screen Time</button>
+      <div class="input-row" style="margin-top:10px"><label>Add dollars:</label><input type="number" id="admin-add-money" min="0" step=".25" placeholder="0.00"></div>
+      <button class="action-btn btn-money" onclick="adminAdjust('money',1)">+ Add Cash</button>
+      <div class="input-row"><label>Remove $:</label><input type="number" id="admin-rm-money" min="0" step=".25" placeholder="0.00"></div>
+      <button class="action-btn btn-danger" onclick="adminAdjust('money',-1)">− Remove Cash</button>
     </div>
 
+    <!-- Change PIN -->
     <div class="custom-spend">
       <div class="custom-spend-title">🔑 Change PIN</div>
-      <div class="input-row">
-        <label>New PIN:</label>
-        <input type="password" id="new-pin-input" maxlength="4" placeholder="••••">
-      </div>
-      <button class="action-btn" style="background:rgba(255,107,0,0.15);border:1px solid var(--orange);color:var(--orange)" onclick="changePin()">Set New PIN</button>
+      <div class="input-row"><label>New PIN:</label><input type="password" id="new-pin" maxlength="4" placeholder="••••"></div>
+      <button class="action-btn btn-orange" onclick="changePin()">Set New PIN</button>
     </div>
 
-    <div class="custom-spend" style="border-color:rgba(255,34,68,0.3)">
+    <!-- Reset -->
+    <div class="custom-spend" style="border-color:rgba(255,34,68,.3)">
       <div class="custom-spend-title" style="color:var(--red)">⚠ DANGER ZONE</div>
-      <button class="action-btn" style="background:rgba(255,34,68,0.1);border:1px solid var(--red);color:var(--red)" onclick="resetAll()">Reset All Data</button>
+      <button class="action-btn btn-danger" onclick="resetAll()">Reset All Data</button>
     </div>
   </div>
 </div>
@@ -780,539 +320,545 @@
 <div id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  CHORE DATA
-// ═══════════════════════════════════════════════
+// ─── CHORE DATA ───────────────────────────────────────────────────────────────
+// maxPerDay: null = unlimited daily   maxPerWeek: null = unlimited weekly
 const CHORES = [
-  // TIME chores
-  { id:'scoop-cat',   name:'Scoop cat box',                    type:'time', value:5,   freq:'M/Th',      maxPerDay:1 },
-  { id:'feed-pets',   name:'Feed pets',                        type:'time', value:5,   freq:'Daily',     maxPerDay:1 },
-  { id:'clean-room',  name:'Clean room',                       type:'time', value:15,  freq:'As needed', maxPerDay:null },
-  { id:'puzzle',      name:'Do a puzzle',                      type:'time', value:5,   freq:'Once daily', maxPerDay:1 },
-  { id:'schoolwork',  name:'School work',                      type:'time', value:10,  freq:'Up to 4× M-F', maxPerDay:4, weekdayOnly:true },
-  { id:'reading',     name:'Read for fun',                     type:'time', value:5,   freq:'Once daily', maxPerDay:1 },
-  { id:'artwork',     name:'Artwork',                          type:'time', value:5,   freq:'Once daily', maxPerDay:1 },
-  { id:'devotional',  name:'Devotional',                       type:'time', value:5,   freq:'Once daily', maxPerDay:1 },
-  { id:'legends-app', name:'Legends app',                      type:'time', value:5,   freq:'Once daily', maxPerDay:1 },
-  { id:'water-plants',name:'Water plants',                     type:'time', value:5,   freq:'Once weekly', maxPerDay:1, weekly:true },
-  { id:'laundry',     name:'Fold & put away laundry',          type:'time', value:10,  freq:'As needed', maxPerDay:null },
-  { id:'clean-bath',  name:'Clean bathroom',                   type:'time', value:10,  freq:'As needed', maxPerDay:null },
-  { id:'wash-dry',    name:'Wash & dry clothes',               type:'time', value:5,   freq:'As needed', maxPerDay:null },
-  // MONEY chores
-  { id:'trash',       name:'Take out trash',                   type:'money', value:50,  freq:'M/Th',      maxPerDay:1 },
-  { id:'check-mail',  name:'Check mail',                       type:'money', value:50,  freq:'Once daily', maxPerDay:1 },
-  { id:'load-dish',   name:'Load dishwasher',                  type:'money', value:50,  freq:'As needed', maxPerDay:null },
-  { id:'unload-dish', name:'Unload dishwasher',                type:'money', value:50,  freq:'As needed', maxPerDay:null },
-  { id:'mop-floors',  name:'Mop floors',                       type:'money', value:200, freq:'As needed', maxPerDay:null },
-  { id:'pickup-room', name:'Pick up kitchen & living room',    type:'money', value:100, freq:'Once daily', maxPerDay:1 },
-  { id:'guinea-pig',  name:'Guinea pig cage',                  type:'money', value:300, freq:'As needed', maxPerDay:null },
-  { id:'wipe-count',  name:'Wipe counters & tables',           type:'money', value:100, freq:'As needed', maxPerDay:null },
-  { id:'sweep-floors',name:'Sweep floors',                     type:'money', value:200, freq:'As needed', maxPerDay:null },
-  { id:'wash-car',    name:'Wash car',                         type:'money', value:200, freq:'Once weekly', maxPerDay:1, weekly:true },
-  { id:'detail-car',  name:'Vacuum & detail car',              type:'money', value:400, freq:'As needed', maxPerDay:null },
-  { id:'mow-front',   name:'Mow front yard',                   type:'money', value:300, freq:'Once weekly', maxPerDay:1, weekly:true },
-  { id:'mow-back',    name:'Mow back yard',                    type:'money', value:300, freq:'Once weekly', maxPerDay:1, weekly:true },
-  { id:'turtle-tank', name:'Clean turtle tank',                type:'money', value:500, freq:'Once monthly', maxPerDay:1, monthly:true },
+  // TIME – daily
+  {id:'feed-pets',   name:'Feed pets',                    type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  {id:'puzzle',      name:'Do a puzzle',                  type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  {id:'reading',     name:'Read for fun',                 type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  {id:'artwork',     name:'Artwork',                      type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  {id:'devotional',  name:'Devotional',                   type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  {id:'legends-app', name:'Legends app',                  type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  // TIME – school (4× per day, weekdays only)
+  {id:'schoolwork',  name:'School work',                  type:'time',  value:10,  freq:'4× M-F',   maxPerDay:4,  maxPerWeek:null, weekdayOnly:true},
+  // TIME – weekly
+  {id:'clean-room',  name:'Clean room',                   type:'time',  value:15,  freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'water-plants',name:'Water plants',                 type:'time',  value:5,   freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'clean-bath',  name:'Clean bathroom',               type:'time',  value:10,  freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  // TIME – twice weekly
+  {id:'laundry',     name:'Fold & put away laundry',      type:'time',  value:10,  freq:'2× week',  maxPerDay:null, maxPerWeek:2},
+  {id:'wash-dry',    name:'Wash & dry clothes',           type:'time',  value:5,   freq:'2× week',  maxPerDay:null, maxPerWeek:2},
+  // MONEY – daily
+  {id:'check-mail',  name:'Check mail',                   type:'money', value:50,  freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  {id:'pickup-room', name:'Pick up kitchen & living room',type:'money', value:100, freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
+  // MONEY – weekly
+  {id:'mop-floors',  name:'Mop floors',                   type:'money', value:200, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'guinea-pig',  name:'Guinea pig cage',              type:'money', value:300, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'wipe-count',  name:'Wipe counters & tables',       type:'money', value:100, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'sweep-floors',name:'Sweep floors',                 type:'money', value:200, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'wash-car',    name:'Wash car',                     type:'money', value:200, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'detail-car',  name:'Vacuum & detail car',          type:'money', value:400, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'mow-front',   name:'Mow front yard',               type:'money', value:300, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'mow-back',    name:'Mow back yard',                type:'money', value:300, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  {id:'turtle-tank', name:'Clean turtle tank',            type:'money', value:500, freq:'1× week',  maxPerDay:null, maxPerWeek:1},
+  // MONEY – twice weekly
+  {id:'load-dish',   name:'Load dishwasher',              type:'money', value:50,  freq:'2× week',  maxPerDay:null, maxPerWeek:2},
+  {id:'unload-dish', name:'Unload dishwasher',            type:'money', value:50,  freq:'2× week',  maxPerDay:null, maxPerWeek:2},
 ];
 
-// Quick spend presets (minutes, label)
-const QUICK_TIME = [
-  { mins:30,  label:'30 min', icon:'🎮' },
-  { mins:60,  label:'1 hour', icon:'🕹️' },
-  { mins:90,  label:'90 min', icon:'👾' },
-  { mins:120, label:'2 hours', icon:'🏆' },
-];
-const QUICK_MONEY = [
-  { cents:100, label:'$1.00', icon:'💵' },
-  { cents:200, label:'$2.00', icon:'💰' },
-  { cents:500, label:'$5.00', icon:'🤑' },
-  { cents:1000,label:'$10.00',icon:'💎' },
-];
+const QUICK_TIME  = [{m:30,l:'30 min',i:'🎮'},{m:60,l:'1 hour',i:'🕹️'},{m:90,l:'90 min',i:'👾'},{m:120,l:'2 hours',i:'🏆'}];
+const QUICK_MONEY = [{c:100,l:'$1.00',i:'💵'},{c:200,l:'$2.00',i:'💰'},{c:500,l:'$5.00',i:'🤑'},{c:1000,l:'$10.00',i:'💎'}];
 
-// ═══════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════
+// ─── SYNC URL (stored separately so reset doesn't nuke it) ───────────────────
+let syncUrl = localStorage.getItem('godzillaSyncUrl') || '';
+let polling = null;
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
 function loadState() {
-  try {
-    return JSON.parse(localStorage.getItem('godzillaChores') || '{}');
-  } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem('godzillaChores') || '{}'); }
+  catch { return {}; }
 }
 function saveState(s) {
   localStorage.setItem('godzillaChores', JSON.stringify(s));
 }
-
+function defaultState() {
+  return {balance:{time:0,money:0}, completions:{}, log:[], pin:'1234'};
+}
 let state = loadState();
-if (!state.balance) state.balance = { time: 0, money: 0 };
-if (!state.completions) state.completions = {};
-if (!state.log) state.log = [];
-if (!state.pin) state.pin = '1234';
-if (!state.parentUnlocked) state.parentUnlocked = false;
-saveState(state);
+['balance','completions','log','pin'].forEach(k => {
+  if (state[k] == null) state[k] = defaultState()[k];
+});
 
-// ═══════════════════════════════════════════════
-//  DATE HELPERS
-// ═══════════════════════════════════════════════
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+// ─── DATE HELPERS ─────────────────────────────────────────────────────────────
+function todayStr()  { return new Date().toISOString().slice(0,10); }
+function weekStart() {
+  const d = new Date(), day = d.getDay();
+  const mon = new Date(d);
+  mon.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return mon.toISOString().slice(0,10);
 }
-function weekStr() {
-  const d = new Date();
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const mon = new Date(d.setDate(diff));
-  return mon.toISOString().slice(0, 10);
-}
-function monthStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-}
-function dayOfWeek() {
-  return new Date().getDay(); // 0=Sun, 1=Mon...6=Sat
-}
-function isWeekday() {
-  const d = dayOfWeek();
-  return d >= 1 && d <= 5;
-}
-function isMondayOrThursday() {
-  const d = dayOfWeek();
-  return d === 1 || d === 4;
-}
+function isWeekday() { const d = new Date().getDay(); return d >= 1 && d <= 5; }
 
-// ═══════════════════════════════════════════════
-//  COMPLETION HELPERS
-// ═══════════════════════════════════════════════
-function getCompletions(choreId) {
-  return state.completions[choreId] || [];
-}
-function countToday(choreId) {
-  const t = todayStr();
-  return getCompletions(choreId).filter(e => e.startsWith(t)).length;
-}
-function countThisWeek(choreId) {
-  const w = weekStr();
-  return getCompletions(choreId).filter(e => e >= w).length;
-}
-function countThisMonth(choreId) {
-  const m = monthStr();
-  return getCompletions(choreId).filter(e => e.startsWith(m.slice(0,7))).length;
-}
+// ─── COMPLETION COUNTS ────────────────────────────────────────────────────────
+function getComp(id)      { return state.completions[id] || []; }
+function countToday(id)   { const t=todayStr();   return getComp(id).filter(e=>e.startsWith(t)).length; }
+function countWeek(id)    { const w=weekStart();  return getComp(id).filter(e=>e>=w).length; }
 
-function canDo(chore) {
-  // weekday only
-  if (chore.weekdayOnly && !isWeekday()) return false;
-  // M/Th only
-  if (chore.freq === 'M/Th' && !isMondayOrThursday()) return false;
-  // weekly limit
-  if (chore.weekly && countThisWeek(chore.id) >= chore.maxPerDay) return false;
-  // monthly limit
-  if (chore.monthly && countThisMonth(chore.id) >= 1) return false;
-  // daily limit
-  if (chore.maxPerDay !== null && countToday(chore.id) >= chore.maxPerDay) return false;
+function canDo(c) {
+  if (c.weekdayOnly && !isWeekday()) return false;
+  if (c.maxPerWeek != null && countWeek(c.id) >= c.maxPerWeek) return false;
+  if (c.maxPerDay  != null && countToday(c.id) >= c.maxPerDay) return false;
+  return true;
+}
+function isAvailableThisWeek(c) {
+  if (c.weekdayOnly && !isWeekday() && c.maxPerDay != null) return true; // still show, just can't do
+  if (c.maxPerWeek != null && countWeek(c.id) >= c.maxPerWeek) return false;
   return true;
 }
 
-function isAvailableToday(chore) {
-  if (chore.weekdayOnly && !isWeekday()) return false;
-  if (chore.freq === 'M/Th' && !isMondayOrThursday()) return false;
-  return true;
+// ─── SYNC ─────────────────────────────────────────────────────────────────────
+function setSyncStatus(status, msg) {
+  const pill = document.getElementById('sync-pill');
+  const txt  = document.getElementById('sync-text');
+  pill.className = 'sync-pill' + (status === 'ok' ? ' ok' : status === 'err' ? ' err' : '');
+  txt.textContent = msg;
 }
 
-// ═══════════════════════════════════════════════
-//  COMPLETE CHORE
-// ═══════════════════════════════════════════════
-function completeChore(choreId) {
-  const chore = CHORES.find(c => c.id === choreId);
-  if (!chore || !canDo(chore)) return;
-
-  const timestamp = new Date().toISOString();
-  if (!state.completions[choreId]) state.completions[choreId] = [];
-  state.completions[choreId].push(timestamp);
-
-  if (chore.type === 'time') {
-    state.balance.time += chore.value;
-    state.log.unshift({ type:'earn-time', choreId, choreName:chore.name, value:chore.value, ts:timestamp });
-    toast(`+${chore.value} MIN ⚡ ${chore.name}`);
-  } else {
-    state.balance.money += chore.value;
-    state.log.unshift({ type:'earn-money', choreId, choreName:chore.name, value:chore.value, ts:timestamp });
-    toast(`+${formatCents(chore.value)} 💵 ${chore.name}`);
+async function syncRequest(params) {
+  if (!syncUrl) return null;
+  try {
+    const qs = Object.entries(params).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&');
+    const res = await fetch(`${syncUrl}?${qs}`);
+    const data = await res.json();
+    if (data.ok && data.state) {
+      applyCloudState(data.state);
+      setSyncStatus('ok', 'Synced ✓');
+      return data.state;
+    }
+    setSyncStatus('err', 'Sync error');
+    return null;
+  } catch {
+    setSyncStatus('err', 'Offline');
+    return null;
   }
+}
+
+function applyCloudState(s) {
+  state.balance     = s.balance     || state.balance;
+  state.completions = s.completions || state.completions;
+  state.log         = s.log         || state.log;
+  // keep local pin
   saveState(state);
+}
+
+async function pollCloud() {
+  if (!syncUrl) return;
+  await syncRequest({});  // plain GET = just fetch state
   refreshAll();
 }
 
-function undoLastCompletion(choreId) {
-  const arr = state.completions[choreId];
-  if (!arr || arr.length === 0) return;
-  const removed = arr.pop();
-  // find matching log entry and remove it
-  const ts = removed;
-  const idx = state.log.findIndex(e => e.choreId === choreId && e.ts === ts);
+function startPolling() {
+  if (polling) clearInterval(polling);
+  if (syncUrl) polling = setInterval(pollCloud, 30000);
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+async function completeChore(id) {
+  const c = CHORES.find(x=>x.id===id);
+  if (!c || !canDo(c)) return;
+  const ts = new Date().toISOString();
+  if (!state.completions[id]) state.completions[id] = [];
+  state.completions[id].push(ts);
+  if (c.type==='time') { state.balance.time += c.value; state.log.unshift({type:'earn-time',choreId:id,choreName:c.name,value:c.value,ts}); }
+  else                 { state.balance.money+= c.value; state.log.unshift({type:'earn-money',choreId:id,choreName:c.name,value:c.value,ts}); }
+  saveState(state);
+  refreshAll();
+  toast(c.type==='time' ? `+${c.value} MIN ⚡ ${c.name}` : `+${cents(c.value)} 💵 ${c.name}`);
+  if (syncUrl) syncRequest({a:'COMPLETE',id,t:c.type,v:c.value,n:c.name});
+}
+
+async function undoChore(id) {
+  const arr = state.completions[id];
+  if (!arr || !arr.length) return;
+  const ts = arr.pop();
+  const idx = state.log.findIndex(e=>e.choreId===id && e.ts===ts);
   if (idx !== -1) {
-    const entry = state.log[idx];
-    if (entry.type === 'earn-time') state.balance.time = Math.max(0, state.balance.time - entry.value);
-    if (entry.type === 'earn-money') state.balance.money = Math.max(0, state.balance.money - entry.value);
-    state.log.splice(idx, 1);
+    const e = state.log[idx];
+    if (e.type==='earn-time')  state.balance.time  = Math.max(0, state.balance.time  - e.value);
+    if (e.type==='earn-money') state.balance.money = Math.max(0, state.balance.money - e.value);
+    state.log.splice(idx,1);
   }
-  saveState(state);
-  refreshAll();
+  saveState(state); refreshAll();
   toast('Undone', 'spend');
+  if (syncUrl) syncRequest({a:'UNDO',id});
 }
 
-// ═══════════════════════════════════════════════
-//  SPEND
-// ═══════════════════════════════════════════════
-function spendTime(mins) {
-  if (state.balance.time < mins) {
-    toast(`Not enough time! Need ${mins} min`, 'error');
-    return;
-  }
+async function spendTime(mins) {
+  if (!mins || mins < 1) { toast('Enter a valid amount','error'); return; }
+  if (state.balance.time < mins) { toast(`Need ${mins} min — you have ${state.balance.time}`,'error'); return; }
   state.balance.time -= mins;
   const ts = new Date().toISOString();
-  state.log.unshift({ type:'spend', choreId:null, choreName:`Used ${mins} min screen time`, value:mins, ts, unit:'time' });
-  saveState(state);
-  refreshAll();
-  toast(`-${mins} MIN 🎮 Enjoy!`, 'spend');
-}
-
-function spendMoney(cents) {
-  if (state.balance.money < cents) {
-    toast(`Not enough cash! Need ${formatCents(cents)}`, 'error');
-    return;
-  }
-  state.balance.money -= cents;
-  const ts = new Date().toISOString();
-  state.log.unshift({ type:'spend', choreId:null, choreName:`Cash out ${formatCents(cents)}`, value:cents, ts, unit:'money' });
-  saveState(state);
-  refreshAll();
-  toast(`-${formatCents(cents)} 💵 Cashed out!`, 'spend');
-}
-
-function spendCustomTime() {
-  const v = parseInt(document.getElementById('spend-time-input').value);
-  if (!v || v < 1) { toast('Enter a valid number of minutes', 'error'); return; }
-  spendTime(v);
+  state.log.unshift({type:'spend',choreName:`Used ${mins} min screen time`,value:mins,ts,unit:'time'});
+  saveState(state); refreshAll();
+  toast(`-${mins} MIN 🎮 Enjoy!`,'spend');
   document.getElementById('spend-time-input').value = '';
+  if (syncUrl) syncRequest({a:'SPEND',t:'time',v:mins,n:`Used ${mins} min screen time`});
 }
-function spendCustomMoney() {
-  const v = parseFloat(document.getElementById('spend-money-input').value);
-  if (!v || v <= 0) { toast('Enter a valid dollar amount', 'error'); return; }
-  spendMoney(Math.round(v * 100));
+
+async function spendMoney(c) {
+  if (!c || c <= 0) { toast('Enter a valid amount','error'); return; }
+  if (state.balance.money < c) { toast(`Need ${cents(c)} — you have ${cents(state.balance.money)}`,'error'); return; }
+  state.balance.money -= c;
+  const ts = new Date().toISOString();
+  state.log.unshift({type:'spend',choreName:`Cash out ${cents(c)}`,value:c,ts,unit:'money'});
+  saveState(state); refreshAll();
+  toast(`-${cents(c)} 💵 Cashed out!`,'spend');
   document.getElementById('spend-money-input').value = '';
+  if (syncUrl) syncRequest({a:'SPEND',t:'money',v:c,n:`Cash out ${cents(c)}`});
 }
 
-// ═══════════════════════════════════════════════
-//  FORMAT HELPERS
-// ═══════════════════════════════════════════════
-function formatCents(c) {
-  return `$${(c / 100).toFixed(2)}`;
-}
-function formatDate(ts) {
-  const d = new Date(ts);
-  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+// ─── FORMAT ───────────────────────────────────────────────────────────────────
+function cents(c) { return `$${(c/100).toFixed(2)}`; }
+function fmtDate(ts) { return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); }
+
+// ─── WEEKLY STATS ─────────────────────────────────────────────────────────────
+function weeklyEarned() {
+  const w = weekStart();
+  let time = 0, money = 0;
+  state.log.forEach(e => {
+    if (e.ts < w) return;
+    if (e.type==='earn-time')  time  += e.value;
+    if (e.type==='earn-money') money += e.value;
+  });
+  return {time, money};
 }
 
-// ═══════════════════════════════════════════════
-//  RENDER BALANCE
-// ═══════════════════════════════════════════════
+// ─── RENDER ───────────────────────────────────────────────────────────────────
 function renderBalance() {
-  document.getElementById('balance-time').textContent = state.balance.time;
-  document.getElementById('balance-money').textContent = formatCents(state.balance.money);
+  document.getElementById('balance-time').textContent  = state.balance.time;
+  document.getElementById('balance-money').textContent = cents(state.balance.money);
+  const ws = weekStart();
+  const d  = new Date(ws + 'T12:00:00');
+  document.getElementById('week-label').textContent =
+    'WEEK OF ' + d.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
+  const {time,money} = weeklyEarned();
+  document.getElementById('week-earned').textContent =
+    `+${time}m  +${cents(money)} this week`;
 }
 
-// ═══════════════════════════════════════════════
-//  RENDER TODAY
-// ═══════════════════════════════════════════════
-function renderToday() {
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const today = new Date();
-  document.getElementById('today-date-label').textContent =
-    `${days[today.getDay()]}, ${today.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}`;
+function renderChoreCard(c, showWeekCount) {
+  const dayCount  = countToday(c.id);
+  const weekCount = countWeek(c.id);
+  const maxed     = !canDo(c);
+  const isMulti   = c.maxPerDay != null && c.maxPerDay > 1;
+  const valStr    = c.type==='time' ? `+${c.value}m` : `+${cents(c.value)}`;
+  const badgeCls  = c.type==='time' ? 'badge-time' : 'badge-money';
 
-  const container = document.getElementById('today-chores-list');
-  const todayChores = CHORES.filter(c => isAvailableToday(c));
-
-  if (todayChores.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="big">😴</div>No chores scheduled today. Rest up!</div>`;
-    return;
+  let countBadge = '';
+  if (c.maxPerWeek != null) {
+    countBadge = `<span class="badge badge-count">${weekCount}/${c.maxPerWeek} wk</span>`;
+  } else if (isMulti) {
+    countBadge = `<span class="badge badge-count">${dayCount}/${c.maxPerDay} today</span>`;
   }
 
-  const timeChores = todayChores.filter(c => c.type === 'time');
-  const moneyChores = todayChores.filter(c => c.type === 'money');
-
-  let html = '';
-  if (timeChores.length) {
-    html += `<div class="chore-group"><div class="chore-group-title">🎮 Screen Time Chores</div>`;
-    html += timeChores.map(c => renderChoreCard(c)).join('');
-    html += `</div>`;
-  }
-  if (moneyChores.length) {
-    html += `<div class="chore-group"><div class="chore-group-title">💵 Money Chores</div>`;
-    html += moneyChores.map(c => renderChoreCard(c)).join('');
-    html += `</div>`;
-  }
-  container.innerHTML = html;
-}
-
-// ═══════════════════════════════════════════════
-//  RENDER ALL CHORES
-// ═══════════════════════════════════════════════
-function renderAll() {
-  const container = document.getElementById('all-chores-list');
-  const timeChores = CHORES.filter(c => c.type === 'time');
-  const moneyChores = CHORES.filter(c => c.type === 'money');
-  let html = '';
-  html += `<div class="chore-group"><div class="chore-group-title">🎮 Screen Time Chores</div>`;
-  html += timeChores.map(c => renderChoreCard(c)).join('');
-  html += `</div>`;
-  html += `<div class="chore-group"><div class="chore-group-title">💵 Money Chores</div>`;
-  html += moneyChores.map(c => renderChoreCard(c)).join('');
-  html += `</div>`;
-  container.innerHTML = html;
-}
-
-function renderChoreCard(c) {
-  const todayCount = countToday(c.id);
-  const canComplete = canDo(c);
-  const isLimited = c.maxPerDay === 1;
-  const isDoneToday = isLimited && todayCount >= 1;
-  const isMulti = c.maxPerDay !== null && c.maxPerDay > 1;
-  const valueStr = c.type === 'time' ? `+${c.value}m` : `+${formatCents(c.value)}`;
-  const badgeClass = c.type === 'time' ? 'badge-time' : 'badge-money';
-  const badgeLabel = c.type === 'time' ? 'Time' : 'Money';
-
-  let btnHtml = '';
+  let btnHtml;
   if (isMulti) {
-    btnHtml = `
-      <div class="count-btn-group">
-        <button class="mini-btn" onclick="completeChore('${c.id}')" ${!canComplete ? 'disabled style="opacity:0.3;cursor:default"' : ''}>+</button>
-        <div class="count-display">${todayCount}/${c.maxPerDay}</div>
-        ${todayCount > 0 ? `<button class="mini-btn" onclick="undoLastCompletion('${c.id}')" style="color:var(--red);border-color:var(--red)">−</button>` : ''}
-      </div>`;
-  } else if (isDoneToday) {
-    btnHtml = `<button class="done-btn already-done">✓ Done</button>`;
+    btnHtml = `<div class="count-group">
+      <button class="mini-btn" onclick="completeChore('${c.id}')" ${maxed ? 'disabled style="opacity:.25;cursor:default"' : ''}>+</button>
+      <div class="count-display">${dayCount}</div>
+      ${dayCount>0 ? `<button class="mini-btn minus" onclick="undoChore('${c.id}')">−</button>` : ''}
+    </div>`;
+  } else if (maxed) {
+    btnHtml = `<button class="done-btn maxed-btn">✓ Done</button>`;
   } else {
     btnHtml = `<button class="done-btn" onclick="completeChore('${c.id}')">Done</button>`;
   }
 
-  return `
-    <div class="chore-card type-${c.type} ${isDoneToday ? 'done-today' : ''}">
-      <div class="chore-info">
-        <div class="chore-name">${c.name}</div>
-        <div class="chore-meta">
-          <span class="badge ${badgeClass}">${badgeLabel}</span>
-          <span class="badge badge-freq">${c.freq}</span>
-        </div>
+  return `<div class="chore-card type-${c.type} ${maxed?'maxed':''}">
+    <div class="chore-info">
+      <div class="chore-name">${c.name}</div>
+      <div class="chore-meta">
+        <span class="badge ${badgeCls}">${c.type}</span>
+        <span class="badge badge-freq">${c.freq}</span>
+        ${countBadge}
       </div>
-      <div class="chore-value">${valueStr}</div>
-      ${btnHtml}
-    </div>`;
+    </div>
+    <div class="chore-value">${valStr}</div>
+    ${btnHtml}
+  </div>`;
 }
 
-// ═══════════════════════════════════════════════
-//  RENDER SPEND
-// ═══════════════════════════════════════════════
+function renderToday() {
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = new Date();
+  document.getElementById('today-date-label').textContent =
+    days[today.getDay()]+', '+today.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  // "available today" = daily chores, or weekly/2× chores not yet maxed for the week
+  const available = CHORES.filter(c => {
+    if (c.weekdayOnly && !isWeekday()) return false;
+    if (c.maxPerWeek != null && countWeek(c.id) >= c.maxPerWeek) return false;
+    return true;
+  });
+
+  if (!available.length) {
+    document.getElementById('today-chores-list').innerHTML =
+      `<div class="empty-state"><div class="big">🏆</div>All done for today!</div>`;
+    return;
+  }
+  const time  = available.filter(c=>c.type==='time');
+  const money = available.filter(c=>c.type==='money');
+  let html = '';
+  if (time.length)  html += `<div class="chore-group"><div class="chore-group-title">🎮 Screen Time</div>${time.map(c=>renderChoreCard(c)).join('')}</div>`;
+  if (money.length) html += `<div class="chore-group"><div class="chore-group-title">💵 Money</div>${money.map(c=>renderChoreCard(c)).join('')}</div>`;
+  document.getElementById('today-chores-list').innerHTML = html;
+}
+
+function renderAll() {
+  const time  = CHORES.filter(c=>c.type==='time');
+  const money = CHORES.filter(c=>c.type==='money');
+  document.getElementById('all-chores-list').innerHTML =
+    `<div class="chore-group"><div class="chore-group-title">🎮 Screen Time</div>${time.map(c=>renderChoreCard(c)).join('')}</div>` +
+    `<div class="chore-group"><div class="chore-group-title">💵 Money</div>${money.map(c=>renderChoreCard(c)).join('')}</div>`;
+}
+
 function renderSpend() {
-  document.getElementById('quick-time-grid').innerHTML = QUICK_TIME.map(q => `
-    <div class="spend-card" onclick="spendTime(${q.mins})">
-      <div class="spend-card-icon">${q.icon}</div>
-      <div class="spend-card-label">Screen Time</div>
-      <div class="spend-card-value">${q.label}</div>
-    </div>`).join('');
-
-  document.getElementById('quick-money-grid').innerHTML = QUICK_MONEY.map(q => `
-    <div class="spend-card" onclick="spendMoney(${q.cents})">
-      <div class="spend-card-icon">${q.icon}</div>
-      <div class="spend-card-label">Cash Out</div>
-      <div class="spend-card-value">${q.label}</div>
-    </div>`).join('');
+  document.getElementById('quick-time-grid').innerHTML  = QUICK_TIME.map(q=>`<div class="spend-card" onclick="spendTime(${q.m})"><div class="spend-card-icon">${q.i}</div><div class="spend-card-label">Screen Time</div><div class="spend-card-value">${q.l}</div></div>`).join('');
+  document.getElementById('quick-money-grid').innerHTML = QUICK_MONEY.map(q=>`<div class="spend-card" onclick="spendMoney(${q.c})"><div class="spend-card-icon">${q.i}</div><div class="spend-card-label">Cash Out</div><div class="spend-card-value">${q.l}</div></div>`).join('');
 }
 
-// ═══════════════════════════════════════════════
-//  RENDER HISTORY
-// ═══════════════════════════════════════════════
-let historyFilter = 'all';
+let histFilter = 'all';
 function filterHistory(f, btn) {
-  historyFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  histFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderHistory();
 }
 function renderHistory() {
-  const list = document.getElementById('history-list');
   let entries = state.log;
-  if (historyFilter === 'earn') entries = entries.filter(e => e.type !== 'spend');
-  if (historyFilter === 'spend') entries = entries.filter(e => e.type === 'spend');
-
-  if (entries.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="big">📋</div>No entries yet. Complete some chores!</div>`;
+  if (histFilter==='earn')  entries = entries.filter(e=>e.type!=='spend');
+  if (histFilter==='spend') entries = entries.filter(e=>e.type==='spend');
+  if (!entries.length) {
+    document.getElementById('history-list').innerHTML =
+      `<div class="empty-state"><div class="big">📋</div>Nothing yet. Complete some chores!</div>`;
     return;
   }
-  list.innerHTML = entries.slice(0, 100).map(e => {
-    let icon = '✅', valStr = '';
-    if (e.type === 'earn-time') { icon = '⚡'; valStr = `+${e.value}m`; }
-    else if (e.type === 'earn-money') { icon = '💵'; valStr = `+${formatCents(e.value)}`; }
-    else { icon = e.unit === 'time' ? '🎮' : '💸'; valStr = e.unit === 'time' ? `-${e.value}m` : `-${formatCents(e.value)}`; }
-    return `
-      <div class="log-entry ${e.type}">
-        <div class="log-icon">${icon}</div>
-        <div class="log-info">
-          <div class="log-chore">${e.choreName}</div>
-          <div class="log-date">${formatDate(e.ts)}</div>
-        </div>
-        <div class="log-value">${valStr}</div>
-      </div>`;
+  document.getElementById('history-list').innerHTML = entries.slice(0,100).map(e => {
+    const icon = e.type==='earn-time'?'⚡':e.type==='earn-money'?'💵':(e.unit==='time'?'🎮':'💸');
+    const val  = e.type==='earn-time'?`+${e.value}m`:e.type==='earn-money'?`+${cents(e.value)}`:e.unit==='time'?`-${e.value}m`:`-${cents(e.value)}`;
+    return `<div class="log-entry ${e.type}"><div class="log-icon">${icon}</div><div class="log-info"><div class="log-chore">${e.choreName}</div><div class="log-date">${fmtDate(e.ts)}</div></div><div class="log-value">${val}</div></div>`;
   }).join('');
-}
-
-// ═══════════════════════════════════════════════
-//  PARENT PANEL
-// ═══════════════════════════════════════════════
-function checkPin() {
-  const input = document.getElementById('pin-input').value;
-  if (input === state.pin) {
-    state.parentUnlocked = true;
-    document.getElementById('pin-section').classList.add('hidden');
-    document.getElementById('parent-content').classList.add('visible');
-    renderDailyCheck();
-  } else if (input.length === 4) {
-    toast('Wrong PIN', 'error');
-    document.getElementById('pin-input').value = '';
-  }
 }
 
 function renderDailyCheck() {
   const today = todayStr();
-  const todayCompletions = [];
-  CHORES.forEach(c => {
-    const count = countToday(c.id);
-    if (count > 0) {
-      todayCompletions.push({ chore: c, count });
-    }
-  });
-
-  if (todayCompletions.length === 0) {
+  const done  = CHORES.filter(c => (state.completions[c.id]||[]).some(t=>t.startsWith(today)));
+  if (!done.length) {
     document.getElementById('daily-check-list').innerHTML =
-      `<div style="color:var(--text-dim);font-size:0.8rem;padding:12px 0">No chores completed today yet.</div>`;
+      `<div style="font-size:.72rem;color:var(--text-dim);padding:8px 0">No chores completed today yet.</div>`;
     return;
   }
-  document.getElementById('daily-check-list').innerHTML = todayCompletions.map(({ chore, count }) => {
-    const earned = chore.type === 'time' ? `+${chore.value * count}m` : `+${formatCents(chore.value * count)}`;
-    return `
-      <div class="check-item">
-        <div class="check-label">${chore.name}${count > 1 ? ` (×${count})` : ''}</div>
-        <div class="check-earned">${earned}</div>
-      </div>`;
+  document.getElementById('daily-check-list').innerHTML = done.map(c => {
+    const count   = (state.completions[c.id]||[]).filter(t=>t.startsWith(today)).length;
+    const earned  = c.type==='time' ? `+${c.value*count}m` : `+${cents(c.value*count)}`;
+    return `<div class="daily-list-item"><div class="daily-item-name">${c.name}${count>1?` ×${count}`:''}</div><div class="daily-item-earned">${earned}</div></div>`;
   }).join('');
 }
 
-function approveDaily() {
-  toast('Day approved! Great work! ☢', 'spend');
+// ─── PARENT PANEL ─────────────────────────────────────────────────────────────
+function checkPin() {
+  const v = document.getElementById('pin-input').value;
+  if (v === state.pin) {
+    document.getElementById('pin-section').style.display    = 'none';
+    document.getElementById('parent-content').style.display = 'block';
+    document.getElementById('sync-url-input').value = syncUrl;
+    renderDailyCheck();
+  } else if (v.length === 4) {
+    toast('Wrong PIN','error');
+    document.getElementById('pin-input').value = '';
+  }
 }
 
-function adminAdjust(type, action) {
-  if (type === 'time') {
-    const fieldId = action === 'add' ? 'admin-add-time' : 'admin-remove-time';
-    const v = parseInt(document.getElementById(fieldId).value);
-    if (!v || v < 0) { toast('Enter a valid amount', 'error'); return; }
-    const ts = new Date().toISOString();
-    if (action === 'add') {
-      state.balance.time += v;
-      state.log.unshift({ type:'earn-time', choreName:`Parent bonus: +${v} min`, value:v, ts });
-      toast(`+${v} min added by parent`);
-    } else {
-      state.balance.time = Math.max(0, state.balance.time - v);
-      state.log.unshift({ type:'spend', choreName:`Parent removed: ${v} min`, value:v, ts, unit:'time' });
-      toast(`-${v} min removed by parent`, 'spend');
-    }
-    document.getElementById(fieldId).value = '';
+async function adminAdjust(type, sign) {
+  const addId = type==='time' ? 'admin-add-time'  : 'admin-add-money';
+  const rmId  = type==='time' ? 'admin-rm-time'   : 'admin-rm-money';
+  const fieldId = sign > 0 ? addId : rmId;
+  const raw   = parseFloat(document.getElementById(fieldId).value);
+  if (!raw || raw <= 0) { toast('Enter a valid amount','error'); return; }
+  const v = type==='time' ? Math.round(raw) : Math.round(raw*100);
+  const delta = sign * v;
+  const ts = new Date().toISOString();
+  const label = (sign>0?'+ ':'-')+(type==='time'?`${v} min`:cents(v))+' (parent)';
+  if (type==='time') {
+    state.balance.time = Math.max(0, state.balance.time + delta);
+    state.log.unshift({type: delta>0?'earn-time':'spend', choreName:label, value:Math.abs(delta), ts, unit:'time'});
   } else {
-    const fieldId = action === 'add' ? 'admin-add-money' : 'admin-remove-money';
-    const v = Math.round(parseFloat(document.getElementById(fieldId).value) * 100);
-    if (!v || v <= 0) { toast('Enter a valid amount', 'error'); return; }
-    const ts = new Date().toISOString();
-    if (action === 'add') {
-      state.balance.money += v;
-      state.log.unshift({ type:'earn-money', choreName:`Parent bonus: ${formatCents(v)}`, value:v, ts });
-      toast(`${formatCents(v)} added by parent`);
-    } else {
-      state.balance.money = Math.max(0, state.balance.money - v);
-      state.log.unshift({ type:'spend', choreName:`Parent removed: ${formatCents(v)}`, value:v, ts, unit:'money' });
-      toast(`-${formatCents(v)} removed by parent`, 'spend');
-    }
-    document.getElementById(fieldId).value = '';
+    state.balance.money = Math.max(0, state.balance.money + delta);
+    state.log.unshift({type: delta>0?'earn-money':'spend', choreName:label, value:Math.abs(delta), ts, unit:'money'});
   }
-  saveState(state);
-  refreshAll();
+  saveState(state); refreshAll();
+  toast(label);
+  document.getElementById(fieldId).value = '';
+  if (syncUrl) syncRequest({a:'ADMIN',t:type,d:delta,n:label});
 }
 
 function changePin() {
-  const newPin = document.getElementById('new-pin-input').value;
-  if (!/^\d{4}$/.test(newPin)) { toast('PIN must be 4 digits', 'error'); return; }
-  state.pin = newPin;
-  saveState(state);
+  const p = document.getElementById('new-pin').value;
+  if (!/^\d{4}$/.test(p)) { toast('PIN must be 4 digits','error'); return; }
+  state.pin = p; saveState(state);
   toast('PIN updated!');
-  document.getElementById('new-pin-input').value = '';
+  document.getElementById('new-pin').value = '';
 }
 
 function resetAll() {
-  if (!confirm('RESET ALL DATA? This cannot be undone!')) return;
+  if (!confirm('Reset ALL data? This cannot be undone!')) return;
   const pin = state.pin;
-  state = { balance: {time:0, money:0}, completions:{}, log:[], pin, parentUnlocked:false };
-  saveState(state);
-  refreshAll();
-  toast('Data reset', 'error');
+  state = defaultState(); state.pin = pin;
+  saveState(state); refreshAll();
+  toast('Data reset','error');
+  if (syncUrl) syncRequest({a:'RESET'});
 }
 
-// ═══════════════════════════════════════════════
-//  TABS
-// ═══════════════════════════════════════════════
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    btn.classList.add('active');
-    const tab = btn.dataset.tab;
-    document.getElementById(`tab-${tab}`).classList.add('active');
-    if (tab === 'history') renderHistory();
-    if (tab === 'parent') renderParentTab();
-  });
-});
-
-function renderParentTab() {
-  if (state.parentUnlocked) {
-    document.getElementById('pin-section').classList.add('hidden');
-    document.getElementById('parent-content').classList.add('visible');
-    renderDailyCheck();
+async function saveSyncUrl() {
+  const url = document.getElementById('sync-url-input').value.trim();
+  const status = document.getElementById('url-status');
+  status.style.display = 'block';
+  status.className = 'url-status';
+  status.textContent = 'Testing connection…';
+  try {
+    const res = await fetch(url + '?');
+    const d   = await res.json();
+    if (d.ok) {
+      syncUrl = url;
+      localStorage.setItem('godzillaSyncUrl', url);
+      applyCloudState(d.state);
+      refreshAll();
+      setSyncStatus('ok', 'Synced ✓');
+      status.className = 'url-status ok';
+      status.textContent = '✓ Connected! Data loaded from Google Sheets.';
+      startPolling();
+    } else throw new Error(d.error || 'Unknown error');
+  } catch(e) {
+    status.className = 'url-status err';
+    status.textContent = '✗ Could not connect. Check the URL and try again.';
   }
 }
 
-// ═══════════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════════
+function disconnectSync() {
+  syncUrl = '';
+  localStorage.removeItem('godzillaSyncUrl');
+  if (polling) { clearInterval(polling); polling = null; }
+  setSyncStatus('', 'Local only');
+  document.getElementById('url-status').style.display = 'none';
+  document.getElementById('sync-url-input').value = '';
+  toast('Disconnected from Google Sheets','spend');
+}
+
+function copyScript() {
+  const ta = document.getElementById('script-code');
+  ta.select(); ta.setSelectionRange(0,99999);
+  document.execCommand('copy');
+  toast('Script copied!');
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab==='history') renderHistory();
+    if (btn.dataset.tab==='parent')  { renderDailyCheck(); document.getElementById('sync-url-input').value=syncUrl; }
+  });
+});
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
 let toastTimer;
 function toast(msg, type='') {
   const el = document.getElementById('toast');
   el.textContent = msg;
-  el.className = 'visible' + (type ? ` ${type}` : '');
+  el.className = 'visible'+(type?' '+type:'');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.className = ''; }, 2800);
+  toastTimer = setTimeout(()=>el.className='', 2800);
 }
 
-// ═══════════════════════════════════════════════
-//  REFRESH ALL
-// ═══════════════════════════════════════════════
+// ─── REFRESH ──────────────────────────────────────────────────────────────────
 function refreshAll() {
-  renderBalance();
-  renderToday();
-  renderAll();
-  renderSpend();
-  if (document.getElementById('tab-history').classList.contains('active')) renderHistory();
-  if (document.getElementById('tab-parent').classList.contains('active')) renderDailyCheck();
+  renderBalance(); renderToday(); renderAll(); renderSpend();
+  const active = document.querySelector('.section.active');
+  if (active && active.id==='tab-history') renderHistory();
+  if (active && active.id==='tab-parent')  renderDailyCheck();
 }
 
-// INIT
-refreshAll();
+// ─── APPS SCRIPT CODE ─────────────────────────────────────────────────────────
+const SCRIPT = `function doGet(e) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var st = ss.getSheetByName('State') || ss.insertSheet('State');
+    var lg = ss.getSheetByName('Log')   || ss.insertSheet('Log');
+    var raw = st.getRange('A1').getValue();
+    var s = raw ? JSON.parse(raw)
+                : {balance:{time:0,money:0},completions:{},log:[]};
+    var a = e.parameter.a, ts = new Date().toISOString();
+    if (a === 'COMPLETE') {
+      var id=e.parameter.id, t=e.parameter.t,
+          v=+e.parameter.v, n=decodeURIComponent(e.parameter.n||id);
+      if (!s.completions[id]) s.completions[id]=[];
+      s.completions[id].push(ts);
+      if (t==='time') s.balance.time+=v; else s.balance.money+=v;
+      s.log.unshift({type:'earn-'+t,choreId:id,choreName:n,value:v,ts:ts});
+      lg.appendRow([ts,'EARN',n,t==='time'?'+'+v+'m':'$'+(v/100).toFixed(2)]);
+    } else if (a === 'UNDO') {
+      var id=e.parameter.id, arr=s.completions[id];
+      if (arr && arr.length) {
+        arr.pop();
+        for (var i=0;i<s.log.length;i++) {
+          if (s.log[i].choreId===id) {
+            var x=s.log[i];
+            if (x.type==='earn-time')  s.balance.time=Math.max(0,s.balance.time-x.value);
+            else s.balance.money=Math.max(0,s.balance.money-x.value);
+            s.log.splice(i,1); break;
+          }
+        }
+      }
+    } else if (a === 'SPEND') {
+      var t=e.parameter.t, v=+e.parameter.v,
+          n=decodeURIComponent(e.parameter.n||'Spend');
+      if (t==='time') s.balance.time=Math.max(0,s.balance.time-v);
+      else s.balance.money=Math.max(0,s.balance.money-v);
+      s.log.unshift({type:'spend',choreName:n,value:v,ts:ts,unit:t});
+      lg.appendRow([ts,'SPEND',n,t==='time'?'-'+v+'m':'-$'+(v/100).toFixed(2)]);
+    } else if (a === 'ADMIN') {
+      var t=e.parameter.t, d=+e.parameter.d,
+          n=decodeURIComponent(e.parameter.n||'Admin');
+      if (t==='time') s.balance.time=Math.max(0,s.balance.time+d);
+      else s.balance.money=Math.max(0,s.balance.money+d);
+      s.log.unshift({type:d>0?'earn-'+t:'spend',choreName:n,
+                     value:Math.abs(d),ts:ts,unit:t});
+      lg.appendRow([ts,'ADMIN',n,(d>0?'+':'')+d]);
+    } else if (a === 'RESET') {
+      s={balance:{time:0,money:0},completions:{},log:[]};
+      lg.appendRow([ts,'RESET','','']);
+    }
+    if (s.log.length > 300) s.log = s.log.slice(0,300);
+    st.getRange('A1').setValue(JSON.stringify(s));
+    return ContentService
+      .createTextOutput(JSON.stringify({ok:true,state:s}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ok:false,error:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally { lock.releaseLock(); }
+}`;
+
+document.getElementById('script-code').value = SCRIPT;
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+async function init() {
+  refreshAll();
+  if (syncUrl) {
+    setSyncStatus('ok', 'Connecting…');
+    await pollCloud();
+    refreshAll();
+    startPolling();
+  }
+}
+init();
 </script>
 </body>
 </html>
