@@ -213,6 +213,27 @@
 <div id="tab-all" class="section">
   <div class="section-title">ALL CHORES</div>
   <div class="section-desc">Tap Done to earn. Weekly chores reset every Monday.</div>
+
+  <div class="custom-spend" style="margin-bottom:18px">
+    <div class="custom-spend-title">➕ Log a Custom Chore</div>
+    <div class="input-row">
+      <label>Chore name:</label>
+      <input type="text" id="custom-name" placeholder="e.g. Washed dishes">
+    </div>
+    <div class="input-row">
+      <label>Type:</label>
+      <select id="custom-type" style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.82rem;padding:7px;">
+        <option value="time">Screen Time (minutes)</option>
+        <option value="money">Money (dollars)</option>
+      </select>
+    </div>
+    <div class="input-row">
+      <label id="custom-value-label">Minutes:</label>
+      <input type="number" id="custom-value" min="1" step="1" placeholder="e.g. 5">
+    </div>
+    <button class="action-btn btn-green" onclick="logCustomChore()">Log Custom Chore</button>
+  </div>
+
   <div id="all-chores-list"></div>
 </div>
 
@@ -323,6 +344,8 @@
 // ─── CHORE DATA ───────────────────────────────────────────────────────────────
 // maxPerDay: null = unlimited daily   maxPerWeek: null = unlimited weekly
 const CHORES = [
+  // TIME – Mon/Thu only
+  {id:'scoop-cat',   name:'Scoop cat box',                   type:'time',  value:5,   freq:'M/Th',     maxPerDay:1,  maxPerWeek:null, mTh:true},
   // TIME – daily
   {id:'feed-pets',   name:'Feed pets',                    type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
   {id:'puzzle',      name:'Do a puzzle',                  type:'time',  value:5,   freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
@@ -339,6 +362,8 @@ const CHORES = [
   // TIME – twice weekly
   {id:'laundry',     name:'Fold & put away laundry',      type:'time',  value:10,  freq:'2× week',  maxPerDay:null, maxPerWeek:2},
   {id:'wash-dry',    name:'Wash & dry clothes',           type:'time',  value:5,   freq:'2× week',  maxPerDay:null, maxPerWeek:2},
+  // MONEY – Mon/Thu only
+  {id:'trash',       name:'Take out trash',                   type:'money', value:50,  freq:'M/Th',     maxPerDay:1,  maxPerWeek:null, mTh:true},
   // MONEY – daily
   {id:'check-mail',  name:'Check mail',                   type:'money', value:50,  freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
   {id:'pickup-room', name:'Pick up kitchen & living room',type:'money', value:100, freq:'Daily',    maxPerDay:1,  maxPerWeek:null},
@@ -388,7 +413,8 @@ function weekStart() {
   mon.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
   return mon.toISOString().slice(0,10);
 }
-function isWeekday() { const d = new Date().getDay(); return d >= 1 && d <= 5; }
+function isWeekday()          { const d = new Date().getDay(); return d >= 1 && d <= 5; }
+function isMondayOrThursday() { const d = new Date().getDay(); return d === 1 || d === 4; }
 
 // ─── COMPLETION COUNTS ────────────────────────────────────────────────────────
 function getComp(id)      { return state.completions[id] || []; }
@@ -397,6 +423,7 @@ function countWeek(id)    { const w=weekStart();  return getComp(id).filter(e=>e
 
 function canDo(c) {
   if (c.weekdayOnly && !isWeekday()) return false;
+  if (c.mTh && !isMondayOrThursday()) return false;
   if (c.maxPerWeek != null && countWeek(c.id) >= c.maxPerWeek) return false;
   if (c.maxPerDay  != null && countToday(c.id) >= c.maxPerDay) return false;
   return true;
@@ -588,6 +615,7 @@ function renderToday() {
   // "available today" = daily chores, or weekly/2× chores not yet maxed for the week
   const available = CHORES.filter(c => {
     if (c.weekdayOnly && !isWeekday()) return false;
+    if (c.mTh && !isMondayOrThursday()) return false;
     if (c.maxPerWeek != null && countWeek(c.id) >= c.maxPerWeek) return false;
     return true;
   });
@@ -772,6 +800,37 @@ function toast(msg, type='') {
   el.className = 'visible'+(type?' '+type:'');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>el.className='', 2800);
+}
+
+// ─── CUSTOM CHORE ─────────────────────────────────────────────────────────────
+document.getElementById('custom-type').addEventListener('change', function() {
+  document.getElementById('custom-value-label').textContent =
+    this.value === 'time' ? 'Minutes:' : 'Dollars:';
+  document.getElementById('custom-value').placeholder =
+    this.value === 'time' ? 'e.g. 5' : 'e.g. 1.00';
+  document.getElementById('custom-value').step = this.value === 'time' ? '1' : '0.25';
+});
+
+async function logCustomChore() {
+  const name  = document.getElementById('custom-name').value.trim();
+  const type  = document.getElementById('custom-type').value;
+  const raw   = parseFloat(document.getElementById('custom-value').value);
+  if (!name)      { toast('Enter a chore name', 'error'); return; }
+  if (!raw || raw <= 0) { toast('Enter a valid amount', 'error'); return; }
+  const value = type === 'time' ? Math.round(raw) : Math.round(raw * 100);
+  const ts    = new Date().toISOString();
+  if (type === 'time') {
+    state.balance.time += value;
+    state.log.unshift({type:'earn-time',  choreId:null, choreName:name, value, ts});
+  } else {
+    state.balance.money += value;
+    state.log.unshift({type:'earn-money', choreId:null, choreName:name, value, ts});
+  }
+  saveState(state); refreshAll();
+  toast(type === 'time' ? `+${value} MIN ⚡ ${name}` : `+${cents(value)} 💵 ${name}`);
+  document.getElementById('custom-name').value  = '';
+  document.getElementById('custom-value').value = '';
+  if (syncUrl) syncRequest({a:'COMPLETE', id:'custom', t:type, v:value, n:name});
 }
 
 // ─── REFRESH ──────────────────────────────────────────────────────────────────
