@@ -175,6 +175,14 @@
     font-weight:600;
     margin-top:14px;
   }
+  .error-detail{
+    display:block;
+    font-weight:500;
+    font-style:italic;
+    font-size:16px;
+    color:#6f6350;
+    margin-top:6px;
+  }
 
   .success{
     display:none;
@@ -275,7 +283,7 @@
     </div>
 
     <button type="submit" class="submit" id="submitBtn">Seal &amp; Send</button>
-    <p class="error-msg" id="errorMsg">Something went wrong sending your reply. Please try again, or text Shelly at (281) 796-0187.</p>
+    <p class="error-msg" id="errorMsg">Your reply was not saved. Please text Shelly at (281) 796-0187.<span class="error-detail" id="errorDetail"></span></p>
   </form>
 
   <div class="success" id="successBox">
@@ -361,7 +369,20 @@ form.addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ name, phone, attending, guests, note })
     });
-    if (!res.ok) throw new Error('Bad response');
+    if (!res.ok) throw new Error('The server returned HTTP ' + res.status + '.');
+
+    // A 200 is not proof of a save: an undeployed or non-public Apps Script
+    // answers 200 with an HTML login page. Only {ok:true} means a written row.
+    const body = await res.text();
+    let payload;
+    try {
+      payload = JSON.parse(body);
+    } catch (parseErr) {
+      throw new Error('The RSVP script returned a page instead of data. Its deployment is likely out of date, or its URL is wrong.');
+    }
+    if (!payload || payload.ok !== true) {
+      throw new Error(payload && payload.error ? payload.error : 'The script did not confirm the save.');
+    }
 
     form.style.display = 'none';
     const box = document.getElementById('successBox');
@@ -374,6 +395,7 @@ form.addEventListener('submit', async (e) => {
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (err) {
     errorMsg.style.display = 'block';
+    document.getElementById('errorDetail').textContent = String(err && err.message || err);
     submitBtn.disabled = false;
     submitBtn.textContent = 'Seal & Send';
   }
