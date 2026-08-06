@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hobby Graveyard: A Birthday Renaissance · RSVP</title>
+<meta property="og:title" content="Hobby Graveyard: A Birthday Renaissance">
+<meta property="og:description" content="You're invited to Shelly's creative celebration. August 22nd, 5pm at the Verons' house. RSVP here!">
+<meta property="og:image" content="https://shellysaidsoedu.com/craftbash/invite.jpg">
+<meta property="og:url" content="https://shellysaidsoedu.com/craftbash/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --parchment:#f7f0dd;
+    --card:#fdf8ec;
+    --ink:#3a3126;
+    --red:#8e2f35;
+    --blue:#2b4372;
+    --gold:#a97c28;
+    --gold-soft:#c9a45c;
+    --green:#4d6b48;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--parchment);
+    background-image:radial-gradient(ellipse at top, rgba(201,164,92,.10), transparent 55%),
+                     radial-gradient(ellipse at bottom, rgba(43,67,114,.06), transparent 60%);
+    color:var(--ink);
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-size:19px;
+    line-height:1.55;
+    padding:18px 14px 70px;
+  }
+  .page{max-width:640px;margin:0 auto}
+
+  .invite-frame{
+    border:3px double var(--gold-soft);
+    padding:8px;
+    background:var(--card);
+    box-shadow:0 6px 24px rgba(58,49,38,.14);
+  }
+  .invite-frame img{width:100%;display:block}
+
+  .flourish{display:flex;align-items:center;gap:12px;margin:34px 0 26px}
+  .flourish::before,.flourish::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft));}
+  .flourish::after{background:linear-gradient(90deg,var(--gold-soft),transparent)}
+  .flourish svg{flex:0 0 auto}
+
+  .letter{
+    font-size:20px;
+    padding:0 6px;
+  }
+  .letter p{margin-bottom:14px}
+  .letter p:first-of-type::first-letter{
+    font-family:'Cinzel',serif;
+    font-size:52px;
+    float:left;
+    line-height:.85;
+    padding:4px 8px 0 0;
+    color:var(--red);
+  }
+  .letter em{color:var(--blue)}
+
+  .details{
+    text-align:center;
+    margin:30px 0 6px;
+    font-size:19px;
+  }
+  .details .when{
+    font-family:'Cinzel',serif;
+    font-weight:600;
+    font-size:22px;
+    color:var(--blue);
+    letter-spacing:.04em;
+  }
+  .details .where{color:var(--red);font-weight:600;font-size:20px;margin-top:6px}
+  .details .tagline{font-style:italic;margin-top:2px}
+  .details .addr{margin-top:6px}
+  .details a{color:var(--blue)}
+  .details .host{margin-top:10px}
+
+  h2.section-title{
+    font-family:'Cinzel',serif;
+    font-weight:600;
+    text-align:center;
+    color:var(--red);
+    font-size:26px;
+    letter-spacing:.06em;
+    margin-bottom:4px;
+  }
+  .section-sub{text-align:center;font-style:italic;margin-bottom:22px}
+
+  form{
+    background:var(--card);
+    border:1px solid var(--gold-soft);
+    outline:3px double rgba(169,124,40,.35);
+    outline-offset:5px;
+    padding:28px 22px;
+  }
+  .field{margin-bottom:20px}
+  label{
+    display:block;
+    font-family:'Cinzel',serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--blue);
+    margin-bottom:7px;
+  }
+  input[type=text], input[type=tel], textarea{
+    width:100%;
+    font-family:'Cormorant Garamond',serif;
+    font-size:19px;
+    color:var(--ink);
+    background:transparent;
+    border:none;
+    border-bottom:1.5px solid var(--gold-soft);
+    padding:6px 2px;
+    border-radius:0;
+  }
+  input:focus, textarea:focus{outline:none;border-bottom-color:var(--red)}
+  input:focus-visible, textarea:focus-visible, button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  textarea{resize:vertical;min-height:64px;border:1.5px solid var(--gold-soft);padding:10px}
+
+  .choice-row{display:flex;gap:10px;flex-wrap:wrap}
+  .choice{
+    flex:1 1 140px;
+    cursor:pointer;
+    text-align:center;
+    font-family:'Cinzel',serif;
+    font-size:15px;
+    letter-spacing:.05em;
+    padding:12px 10px;
+    border:1.5px solid var(--gold-soft);
+    background:transparent;
+    color:var(--ink);
+    transition:all .15s ease;
+  }
+  .choice[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fdf8ec}
+  .choice.small{flex:1 1 56px;padding:10px 6px}
+  .choice.small[aria-pressed="true"]{background:var(--blue);border-color:var(--blue)}
+
+  .guest-names{margin-top:14px}
+  .guest-names .field{margin-bottom:12px}
+  .hint{font-style:italic;font-size:16px;color:#6f6350;margin-top:5px}
+
+  .hidden{display:none}
+
+  button.submit{
+    display:block;
+    width:100%;
+    cursor:pointer;
+    font-family:'Cinzel',serif;
+    font-weight:600;
+    font-size:18px;
+    letter-spacing:.12em;
+    color:#fdf8ec;
+    background:var(--red);
+    border:none;
+    padding:16px;
+    margin-top:6px;
+    transition:background .15s ease;
+  }
+  button.submit:hover{background:#7a262c}
+  button.submit:disabled{background:#b08e91;cursor:wait}
+
+  .error-msg{
+    display:none;
+    text-align:center;
+    color:var(--red);
+    font-weight:600;
+    margin-top:14px;
+  }
+
+  .success{
+    display:none;
+    text-align:center;
+    background:var(--card);
+    border:1px solid var(--gold-soft);
+    outline:3px double rgba(169,124,40,.35);
+    outline-offset:5px;
+    padding:44px 24px;
+  }
+  .success h2{
+    font-family:'Cinzel',serif;
+    color:var(--red);
+    font-size:26px;
+    letter-spacing:.06em;
+    margin:14px 0 10px;
+  }
+  .success p{font-size:20px}
+
+  footer{
+    text-align:center;
+    margin-top:40px;
+    font-style:italic;
+    font-size:16px;
+    color:#6f6350;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .success.show{animation:rise .5s ease}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="invite-frame">
+    <img src="invite.jpg" alt="Illuminated watercolor invitation: Hobby Graveyard, A Birthday Renaissance. You're invited to Shelly's creative celebration. August 22nd, 5pm, at the Verons' house. BYOB, snacks served, no experience necessary.">
+  </div>
+
+  <div class="flourish" aria-hidden="true">
+    <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="7" fill="none" stroke="#a97c28" stroke-width="1.6"/><g stroke="#a97c28" stroke-width="1.4"><line x1="17" y1="1" x2="17" y2="7"/><line x1="17" y1="27" x2="17" y2="33"/><line x1="1" y1="17" x2="7" y2="17"/><line x1="27" y1="17" x2="33" y2="17"/><line x1="5.7" y1="5.7" x2="9.9" y2="9.9"/><line x1="24.1" y1="24.1" x2="28.3" y2="28.3"/><line x1="28.3" y1="5.7" x2="24.1" y2="9.9"/><line x1="9.9" y1="24.1" x2="5.7" y2="28.3"/></g></svg>
+  </div>
+
+  <div class="letter">
+    <p>For years, I've collected arts and craft supplies for hobbies that came and went, and it shows. Rather than let them haunt my front office, I'm throwing a birthday party that's basically an <em>artist's atelier meets creative permission slip</em>.</p>
+    <p>Join me on August 22nd at 5pm for an evening of making, experimenting, and absolutely zero judgment. Craft stations will be set up. Materials will be abundant. Your only job is to show up and create something, attempt something, or accidentally create something&hellip; all wonderful.</p>
+    <p>Bring your drink of choice, some inspiration, and your spouse/SO/kid/best crafting buddy. Themed snacks will be served. No experience necessary. Messy hands encouraged!</p>
+  </div>
+
+  <div class="details">
+    <div class="when">Saturday, August 22, 2026 &middot; 5:00 PM</div>
+    <div class="where">The Veron House</div>
+    <div class="tagline">where hobbies and craft supplies go to die</div>
+    <div class="addr"><a href="https://maps.google.com/?q=23464+Yaupon+Hills+Dr,+New+Caney,+TX+77357">23464 Yaupon Hills Dr, New Caney, TX 77357</a></div>
+    <div class="host">Hosted by Shelly Veron &middot; <a href="tel:+12817960187">(281) 796-0187</a></div>
+  </div>
+
+  <div class="flourish" aria-hidden="true">
+    <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="7" fill="none" stroke="#a97c28" stroke-width="1.6"/><g stroke="#a97c28" stroke-width="1.4"><line x1="17" y1="1" x2="17" y2="7"/><line x1="17" y1="27" x2="17" y2="33"/><line x1="1" y1="17" x2="7" y2="17"/><line x1="27" y1="17" x2="33" y2="17"/><line x1="5.7" y1="5.7" x2="9.9" y2="9.9"/><line x1="24.1" y1="24.1" x2="28.3" y2="28.3"/><line x1="28.3" y1="5.7" x2="24.1" y2="9.9"/><line x1="9.9" y1="24.1" x2="5.7" y2="28.3"/></g></svg>
+  </div>
+
+  <h2 class="section-title" id="rsvp">Inscribe Your Reply</h2>
+  <p class="section-sub">Kindly respond by August 15th</p>
+
+  <form id="rsvpForm" novalidate>
+    <div class="field">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" autocomplete="name" required>
+    </div>
+
+    <div class="field">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" required>
+    </div>
+
+    <div class="field">
+      <label id="attendLabel">Will You Attend?</label>
+      <div class="choice-row" role="group" aria-labelledby="attendLabel">
+        <button type="button" class="choice" data-attend="Joyfully yes" aria-pressed="false">Joyfully, Yes</button>
+        <button type="button" class="choice" data-attend="Regretfully no" aria-pressed="false">Alas, I Cannot</button>
+      </div>
+    </div>
+
+    <div class="field" id="guestSection">
+      <label id="guestLabel">Bringing Anyone? (Up to 3)</label>
+      <div class="choice-row" role="group" aria-labelledby="guestLabel">
+        <button type="button" class="choice small" data-count="0" aria-pressed="true">Just Me</button>
+        <button type="button" class="choice small" data-count="1" aria-pressed="false">+1</button>
+        <button type="button" class="choice small" data-count="2" aria-pressed="false">+2</button>
+        <button type="button" class="choice small" data-count="3" aria-pressed="false">+3</button>
+      </div>
+      <div class="guest-names" id="guestNames"></div>
+    </div>
+
+    <div class="field">
+      <label for="note">A Note for Shelly <span style="text-transform:none;letter-spacing:0;font-family:'Cormorant Garamond',serif;font-weight:500">(optional)</span></label>
+      <textarea id="note" name="note" placeholder="A hobby you once abandoned, a snack request, well wishes..."></textarea>
+    </div>
+
+    <button type="submit" class="submit" id="submitBtn">Seal &amp; Send</button>
+    <p class="error-msg" id="errorMsg">Something went wrong sending your reply. Please try again, or text Shelly at (281) 796-0187.</p>
+  </form>
+
+  <div class="success" id="successBox">
+    <svg width="46" height="46" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="7" fill="none" stroke="#a97c28" stroke-width="1.6"/><g stroke="#a97c28" stroke-width="1.4"><line x1="17" y1="1" x2="17" y2="7"/><line x1="17" y1="27" x2="17" y2="33"/><line x1="1" y1="17" x2="7" y2="17"/><line x1="27" y1="17" x2="33" y2="17"/><line x1="5.7" y1="5.7" x2="9.9" y2="9.9"/><line x1="24.1" y1="24.1" x2="28.3" y2="28.3"/><line x1="28.3" y1="5.7" x2="24.1" y2="9.9"/><line x1="9.9" y1="24.1" x2="5.7" y2="28.3"/></g></svg>
+    <h2 id="successTitle">Your Name Is Inscribed</h2>
+    <p id="successText">Thank you! Shelly has received your reply. Come ready to make something wonderful (or wonderfully strange).</p>
+  </div>
+
+  <footer>BYOB &middot; Snacks Served &middot; No Experience Necessary</footer>
+</div>
+
+<script>
+// ============================================================
+// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BETWEEN THE QUOTES
+// ============================================================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvy72kcn9eNTJUn_pXqbqqtWHGcu9ZaswN34o4dTUVdZ1Rk0vjmloAAlCt2SitucPQ/exec";
+
+const form = document.getElementById('rsvpForm');
+const guestNamesDiv = document.getElementById('guestNames');
+const guestSection = document.getElementById('guestSection');
+const errorMsg = document.getElementById('errorMsg');
+const submitBtn = document.getElementById('submitBtn');
+let attending = null;
+let guestCount = 0;
+
+// Attend toggle
+document.querySelectorAll('[data-attend]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    attending = btn.dataset.attend;
+    document.querySelectorAll('[data-attend]').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+    const isNo = attending === 'Regretfully no';
+    guestSection.classList.toggle('hidden', isNo);
+    if (isNo) setGuestCount(0);
+  });
+});
+
+// Guest count toggle
+document.querySelectorAll('[data-count]').forEach(btn => {
+  btn.addEventListener('click', () => setGuestCount(parseInt(btn.dataset.count, 10)));
+});
+
+function setGuestCount(n) {
+  guestCount = n;
+  document.querySelectorAll('[data-count]').forEach(b =>
+    b.setAttribute('aria-pressed', parseInt(b.dataset.count, 10) === n ? 'true' : 'false'));
+  guestNamesDiv.innerHTML = '';
+  for (let i = 1; i <= n; i++) {
+    const wrap = document.createElement('div');
+    wrap.className = 'field';
+    wrap.innerHTML = '<label for="guest' + i + '">Guest ' + i + ' Name</label>' +
+      '<input type="text" id="guest' + i + '" class="guest-input" required>';
+    guestNamesDiv.appendChild(wrap);
+  }
+  if (n > 0) {
+    const hint = document.createElement('p');
+    hint.className = 'hint';
+    hint.textContent = 'Spouses, SOs, kids, and best crafting buddies all welcome.';
+    guestNamesDiv.appendChild(hint);
+  }
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorMsg.style.display = 'none';
+
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const note = document.getElementById('note').value.trim();
+  const guests = [...document.querySelectorAll('.guest-input')].map(i => i.value.trim());
+
+  if (!name) { alert('Please enter your name.'); return; }
+  if (!phone) { alert('Please enter a phone number so Shelly can reach you.'); return; }
+  if (!attending) { alert('Please let Shelly know if you can attend.'); return; }
+  if (guests.some(g => !g)) { alert('Please list the name of each guest you are bringing.'); return; }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+
+  try {
+    if (SCRIPT_URL.indexOf('http') !== 0) throw new Error('Script URL not configured');
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ name, phone, attending, guests, note })
+    });
+    if (!res.ok) throw new Error('Bad response');
+
+    form.style.display = 'none';
+    const box = document.getElementById('successBox');
+    if (attending === 'Regretfully no') {
+      document.getElementById('successTitle').textContent = 'You Will Be Missed';
+      document.getElementById('successText').textContent = 'Thank you for letting Shelly know. May your hobbies rest in peace another day.';
+    }
+    box.style.display = 'block';
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (err) {
+    errorMsg.style.display = 'block';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Seal & Send';
+  }
+});
+</script>
+</body>
+</html>
